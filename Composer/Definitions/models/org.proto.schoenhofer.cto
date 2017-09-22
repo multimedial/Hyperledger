@@ -1,0 +1,84 @@
+/**
+* Definition file for the vsprototype fabric blockchain for tracking documents
+* 16th of sep 2017 - christophe.leske@extern.schoenhofer.de
+* 22nd of sep 2017 - v1.1 * version: v1.1 22nd of Sep 2017
+* author: Christophe Leske, cleske@extern.schoenhofer.de
+* 
+* Schoenhofer Sales and Engineering GmbH, Siegburg, www.schoenhofer.de 
+*
+*/
+
+namespace org.proto.schoenhofer
+
+asset Document identified by documentName {
+  ///////////////////////////////////////
+  // defines a document with simple meta
+  // data (description, version)
+  ///////////////////////////////////////
+    o String documentName
+    o String description
+    o Double version
+    --> User owner
+    --> User originalowner
+}
+
+participant User identified by userId {
+  ///////////////////////////////////////
+  // defines a simple user on the network
+  ///////////////////////////////////////
+    o String userId
+    o String firstName
+    o String lastName
+}
+
+transaction CheckOut {
+  ///////////////////////////////////////
+  // defines a check out transaction
+  // user newOwner will own the document
+  ///////////////////////////////////////
+    --> Document document
+    --> User newOwner
+}
+
+transaction ReturnDocument {
+  ///////////////////////////////////////
+  // defines a check out transaction
+  // user originalowner will reown the document
+  ///////////////////////////////////////
+    --> Document document
+}
+
+transaction WhoHas {
+  ///////////////////////////////////////
+  // tells who currently owns the document
+  ///////////////////////////////////////
+    --> Document document
+}
+
+
+
+event ReturnNotification {
+  ///////////////////////////////////////
+  // tells who currently owns the document
+  ///////////////////////////////////////
+    --> Document document
+    --> User user
+}
+
+
+event CheckOutNotification {
+  ///////////////////////////////////////
+  // tells who currently owns the document
+  ///////////////////////////////////////
+  	--> Document document
+    --> User from_user
+    --> User to_user
+}
+
+event WhoHasNotification {
+  ///////////////////////////////////////
+  // tells who currently owns the document
+  ///////////////////////////////////////
+  	--> Document document
+    --> User user
+}

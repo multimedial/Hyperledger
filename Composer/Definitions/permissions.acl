@@ -1,0 +1,24 @@
+/**
+ * Access control rules for org.proto.schoenhofer
+ * v1.0 cleske@extern.schoenhofer.de
+ * 22 of sep 2017
+ * version: v1.1 22nd of Sep 2017
+ * author: Christophe Leske, cleske@extern.schoenhofer.de
+ * Schoenhofer Sales and Engineering GmbH, Siegburg, www.schoenhofer.de
+ */
+
+rule Default {
+    description: "Allow all access to all documents"
+    participant: "ANY"
+    operation: ALL
+    resource: "org.proto.schoenhofer.*"
+    action: ALLOW
+}
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "org.hyperledger.composer.system.Participant"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
