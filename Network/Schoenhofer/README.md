@@ -1,8 +1,8 @@
-## Basic Network Config
+## Schönhofer Network Config
 
 Note that this basic configuration uses pre-generated certificates and
-key material, and also has predefined transactions to initialize a 
-channel named "mychannel".
+key material, and has  predefined transactions to initialize a 
+channel named "vertraulich".
 
 To regenerate this material, simply run ``generate.sh``.
 
@@ -11,4 +11,35 @@ To stop it, run ``stop.sh``
 To completely remove all incriminating evidence of the network
 on your system, run ``teardown.sh``.
 
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+README
+
+Dieses ReadMe beschreibt den Aufbau und Start des Schönhofer-Netzwerkes.
+Die aktuelle Version ist abgeleitet vom first-network Beispiel aus den fabric-samples. 
+
+
+Um ein eigenes Netzwerk zu definieren, müssen mehrere Skripte aufgerufen werden: 
+
+- generate.sh (um die notwendigen Docker Images, Zertifikate, logischen Kanäle und Konfiguration der Blockchain einzurichten)
+
+- start.sh (um die Docker Images zu starten)
+
+- stop.sh (stoppt die Blockchain)
+
+- teardown.sh (löscht die Docker Images)
+
+
+generate.sh
+Generate.sh definiert vor allen Dingen die digitalen Zertifikate und logischen Kanäle (=Ledgers) der Blockchain. Jeder Kanal ist eine Blockchain.
+
+start.sh
+Startet die Docker Container mit der eigentlichen Blockchain.
+
+stop.sh
+Stoppt die laufenden Docker Container 
+
+teardown.sh 
+Beendet und löscht die Docker Images.
