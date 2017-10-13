@@ -23,12 +23,16 @@ Profiles:
             SampleConsortium:
                 Organizations:
                     - *Org1
+                    - *Org2
+                    - *Org3
     OneOrgChannel:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
+                - *Org2
+                - *Org3
 
 ################################################################################
 #
@@ -95,7 +99,7 @@ Organizations:
         # ID to load the MSP definition as
         ID: Org3MSP
 
-        MSPDir: crypto-config/peerOrganizations/amt1.aufsicht.de/msp
+        MSPDir: crypto-config/peerOrganizations/amt3.aufsicht.de/msp
 
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used

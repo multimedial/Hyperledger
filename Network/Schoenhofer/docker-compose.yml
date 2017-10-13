@@ -13,7 +13,7 @@ services:
     image: hyperledger/fabric-ca
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca.example.com
+      - FABRIC_CA_SERVER_CA_NAME=ca.aufsicht.de
     ports:
       - 7054:7054
     command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/amt1.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/a22daf356b2aab5792ea53e35f66fccef1d7f1aa2b3a2b92dbfbf96a448ea26a_sk -b admin:adminpw -d'
@@ -41,8 +41,8 @@ services:
         - ./config/:/etc/hyperledger/configtx
         - ./crypto-config/ordererOrganizations/aufsicht.de/orderers/orderer.aufsicht.de/:/etc/hyperledger/msp/orderer
         - ./crypto-config/peerOrganizations/amt1.aufsicht.de/peers/peer0.amt1.aufsicht.de/:/etc/hyperledger/msp/peerOrg1
-        - ./crypto-config/peerOrganizations/amt2.aufsicht.de/peers/peer0.amt2.aufsicht.de/:/etc/hyperledger/msp/peerOrg1
-        - ./crypto-config/peerOrganizations/amt3.aufsicht.de/peers/peer0.amt3.aufsicht.de/:/etc/hyperledger/msp/peerOrg1
+        - ./crypto-config/peerOrganizations/amt2.aufsicht.de/peers/peer0.amt2.aufsicht.de/:/etc/hyperledger/msp/peerOrg2
+        - ./crypto-config/peerOrganizations/amt3.aufsicht.de/peers/peer0.amt3.aufsicht.de/:/etc/hyperledger/msp/peerOrg3
     networks:
       - basic
       
@@ -50,6 +50,7 @@ services:
     container_name: peer0.amt1.aufsicht.de
     image: hyperledger/fabric-peer
     environment:
+      - CORE_PEER_ADDRESSAUTODETECT=true
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_PEER_ID=peer0.amt1.aufsicht.de
       - CORE_LOGGING_PEER=debug
@@ -84,6 +85,85 @@ services:
       - couchdb
     networks:
       - basic
+      
+  peer0.amt2.aufsicht.de:
+    container_name: peer0.amt2.aufsicht.de
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_PEER_ADDRESSAUTODETECT=true
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.amt2.aufsicht.de
+      - CORE_LOGGING_PEER=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.amt2.aufsicht.de:7051
+      # # the following setting starts chaincode containers on the same
+      # # bridge network as the peers
+      # # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+    ports:
+      - 7061:7051
+      - 7063:7053
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/amt2.aufsicht.de/peers/peer0.amt2.aufsicht.de/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/amt2.aufsicht.de/users:/etc/hyperledger/msp/users
+        - ./config:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.aufsicht.de
+      - couchdb
+    networks:
+      - basic
+      
+  peer0.amt3.aufsicht.de:
+    container_name: peer0.amt3.aufsicht.de
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.amt3.aufsicht.de
+      - CORE_LOGGING_PEER=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_LOCALMSPID=Org3MSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.amt3.aufsicht.de:7071
+      # # the following setting starts chaincode containers on the same
+      # # bridge network as the peers
+      # # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_basic
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    # command: peer node start --peer-chaincodedev=true
+    ports:
+      - 7071:7051
+      - 7073:7053
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/amt3.aufsicht.de/peers/peer0.amt3.aufsicht.de/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/amt3.aufsicht.de/users:/etc/hyperledger/msp/users
+        - ./config:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.aufsicht.de
+      - couchdb
+    networks:
+      - basic
 
   couchdb:
     container_name: couchdb
@@ -107,7 +187,7 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_LOGGING_LEVEL=DEBUG
       - CORE_PEER_ID=cli
-      - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+      - CORE_PEER_ADDRESS=peer0.amt1.aufsicht.de:7051
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
       - CORE_CHAINCODE_KEEPALIVE=10
@@ -119,8 +199,10 @@ services:
         - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
     networks:
         - basic
-    #depends_on:
-    #  - orderer.example.com
-    #  - peer0.org1.example.com
-    #  - couchdb
+    depends_on:
+      - orderer.aufsicht.de
+      - peer0.amt1.aufsicht.de
+      - peer0.amt2.aufsicht.de
+      - peer0.amt3.aufsicht.de
+      - couchdb
  
