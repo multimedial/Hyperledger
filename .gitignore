@@ -4,3 +4,5 @@
 *.block
 *.pem
 *.pem
+/Network/Schoenhofer/crypto-config
+crypto-config
