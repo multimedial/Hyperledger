@@ -6,3 +6,5 @@
 *.pem
 /Network/Schoenhofer/crypto-config
 crypto-config
+*.iml
+/Chaincode/docutracker/workplace/*.iml
