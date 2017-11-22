@@ -79,7 +79,7 @@ func (t *SmartContract) Invoke (stub shim.ChaincodeStubInterface) peer.Response 
 	fn, args := stub.GetFunctionAndParameters()
 
 	var result string
-	var err error
+	err := Error('Command not recognized.')
 
 	if fn == "createDocument" {
 		return t.createDocument(stub, args)

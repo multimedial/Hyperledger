@@ -35,18 +35,16 @@ type Workplace struct {
 	// to be JSONED
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	Name string
-	FirstName string
-	LastName string
-	SecurityLevel int
+	Place string
 }
 
-func (t *User) Init(stub shim.ChaincodeStubInterface) peer.Response {
+func (t *Workplace) Init(stub shim.ChaincodeStubInterface) peer.Response {
 
 	fmt.Println("######################## docuser struct initialized. ########################")
 	return shim.Success(nil)
 }
 
-func (t *User) Invoke (stub shim.ChaincodeStubInterface) peer.Response {
+func (t *Workplace) Invoke (stub shim.ChaincodeStubInterface) peer.Response {
 
 	fn, args := stub.GetFunctionAndParameters()
 
@@ -115,8 +113,8 @@ func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func main () {
 
-	if err := shim.Start(new(User)); err != nil {
-		fmt.Printf("Error starting Document chaincode: %s", err)
+	if err := shim.Start(new(Workplace)); err != nil {
+		fmt.Printf("Error starting Workplace chaincode: %s", err)
 	}
 
 }
