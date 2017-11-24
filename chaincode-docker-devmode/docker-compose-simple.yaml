@@ -54,13 +54,13 @@ services:
       - CORE_PEER_ADDRESS=peer:7051
       - CORE_PEER_LOCALMSPID=DEFAULT
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp
-    working_dir: /opt/gopath/src/chaincodedev/
+    working_dir: /opt/gopath/src/chaincodedev
     command: /bin/bash -c './script.sh'
     volumes:
         - /var/run/:/host/var/run/
         - ./msp:/etc/hyperledger/msp
-        - ../../go/src/:/opt/gopath/src/chaincodedev/chaincode
-        - ./:/opt/gopath/src/chaincodedev
+        - ./../../go/src/docutracker/:/opt/gopath/src/docutracker
+        - ./:/opt/gopath/src/chaincodedev/
     depends_on:
       - orderer
       - peer
@@ -77,12 +77,13 @@ services:
       - CORE_PEER_ADDRESS=peer:7051
       - CORE_PEER_LOCALMSPID=DEFAULT
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp
-    working_dir: /opt/gopath/src/document
+    working_dir: /opt/gopath/src/docutracker
     command: /bin/bash -c 'sleep 6000000'
     volumes:
         - /var/run/:/host/var/run/
         - ./msp:/etc/hyperledger/msp
         - ../../go/src/:/opt/gopath/src/
+        - ./../../go/src/docutracker/:/opt/gopath/src/docutracker
     depends_on:
       - orderer
       - peer
