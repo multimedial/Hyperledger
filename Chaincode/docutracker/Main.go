@@ -1,9 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Document tracking system POC for
-// Schoenhofer Sales and Engineering GmbH, Siegburg
+// Document tracking system POC for Schoenhofer Sales and Engineering GmbH, Siegburg
 //
-// 	author: christophe leske, christophe.leske@extern.schoenhofer.de
-//	v: 1.0 (10th of nov 2017)
+// author: christophe leske, christophe.leske@extern.schoenhofer.de
+// v: 1.0 (10th of nov 2017)
 //
 // Requirements:
 // *************
@@ -19,20 +18,35 @@ package main
 // models a trackable document for the document tracking system
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 import (
+
+	////////////////////////////////////////////////////
+	// standard packages
+	////////////////////////////////////////////////////
 	"fmt"
 	"strconv"
-	"github.com/hyperledger/fabric/core/chaincode/shim"
-	"github.com/hyperledger/fabric/protos/peer"
 	"encoding/json"
 	"bytes"
+
+	////////////////////////////////////////////////////
+	// external packages
+	////////////////////////////////////////////////////
+	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"github.com/hyperledger/fabric/protos/peer"
+
+	////////////////////////////////////////////////////
+	// project-specific sub-packages
+	////////////////////////////////////////////////////
 	"docutracker/document"
 	"docutracker/docuser"
+	"docutracker/workplace"
+
 )
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Document implements a document asset owned by a user
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 type SmartContract struct {
-
+	// this is the smart contract struct
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,15 +92,24 @@ func (t *SmartContract) Invoke (stub shim.ChaincodeStubInterface) peer.Response 
 
 	fn, args := stub.GetFunctionAndParameters()
 
+	// some variables for later use
 	var result string
-	err := Error('Command not recognized.')
+	var err error
 
+
+	//////////////////////////////////////////////////////////////////
+	// main branching of functions
+	//////////////////////////////////////////////////////////////////
 	if fn == "createDocument" {
 		return t.createDocument(stub, args)
 	}
 
 	if fn == "createUser" {
 		return t.createUser(stub, args)
+	}
+
+	if fn == "createWorkplace" {
+		return t.createWorkplace(stub, args)
 	}
 
 	if fn == "lendDocument" {
@@ -105,6 +128,19 @@ func (t *SmartContract) Invoke (stub shim.ChaincodeStubInterface) peer.Response 
 		return t.queryAllUser(stub)
 	}
 
+	if fn == "queryAllWorkplaces" {
+		return t.queryAllWorkplaces(stub)
+	}
+
+	if fn == "queryAll" {
+		return t.queryAll(stub, args[0]) // only first argument passed
+	}
+
+	if fn == "getHistory" {
+		return t.getHistory(stub, args[0]) // only first argument passed
+	}
+
+
 	if fn == "set" {
 		result, err = set(stub, args)
 	}
@@ -117,8 +153,14 @@ func (t *SmartContract) Invoke (stub shim.ChaincodeStubInterface) peer.Response 
 		return shim.Error(err.Error())
 	}
 
+	//////////////////////////////////////////////////////////////////
 	// return the result as success payload
-	return shim.Success([]byte(result))
+	//////////////////////////////////////////////////////////////////
+	if result != "" {
+		return shim.Success([]byte(result))
+	} else {
+	return shim.Error("Method call not recognized: '" + fn + "'")
+	}
 
 }
 
@@ -142,6 +184,7 @@ func get(stub shim.ChaincodeStubInterface, args []string) (string, error){
 	return string(value), nil
 }
 
+
 func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
 	if len(args) != 2 {
@@ -161,6 +204,7 @@ func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	return args[1], nil
 
 }
+
 
 func (s *SmartContract) createDocument(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 
@@ -183,6 +227,14 @@ func (s *SmartContract) createDocument(stub shim.ChaincodeStubInterface, args []
 	version,_ := strconv.Atoi(args[2])
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// check the owner of the document - it must be the username of an already registered one
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	owner := args[3]
+	if !s.isUser(stub, owner) {
+		return shim.Error("The owner of the document is not a registered user. Please register the user first!")
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// get the security Level of the document and bail if there is an error
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	securityLevel,err := strconv.Atoi(args[4])
@@ -191,39 +243,108 @@ func (s *SmartContract) createDocument(stub shim.ChaincodeStubInterface, args []
 		return shim.Error("Either could not convert security level, or level provided is out of range (must be 0 to 3).")
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// check the owner of the document - it must be the username of an already registered one
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	owner := args[3]
-	if !s.isUser(stub, owner) {
-		return shim.Error("The owner of the document is not a registered user. Please register the user first!")
-	}
-
 	var doc = document.Document{Title: title, Version: version, Owner: owner, CurrentOwner: owner, SecurityLevel: securityLevel}
 	documentAsBytes, _ := json.Marshal(doc)
 	stub.PutState(identityKey, documentAsBytes)
 	return shim.Success(nil)
 }
 
+
 func (s *SmartContract) createUser(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 
-	if len(args) != 4 {
-		return shim.Error("Incorrect number of arguments. Expecting 5.")
+	if len(args) != 5 {
+		return shim.Error("Incorrect number of arguments. Expecting 5: userid, firstname, lastname, workplace, securitylevel")
 	}
 
-	// args[0] => KEY for multirange retrieval
+	///////////////////////////////////////////////////
+	// 1.st param: userid - key for the search in the database
+	///////////////////////////////////////////////////
 	userid := args[0]
 
-	securityLevel, err := strconv.Atoi(args[3])
+	///////////////////////////////////////////////////
+	// 2.nd param: firstname
+	///////////////////////////////////////////////////
+	firstname := args[1]
 
+	///////////////////////////////////////////////////
+	// 3.rd param: lastname
+	///////////////////////////////////////////////////
+	lastname := args[2]
+
+	///////////////////////////////////////////////////
+	// 4th param: workplace ID (!)
+	///////////////////////////////////////////////////
+	workplace := args[3]
+	///////////////////////////////////////////////////
+	// we need to check if the supplied workplaceID is
+	// indeed a valid workplace! If not, webail out
+	///////////////////////////////////////////////////
+	if s.isWorkplace(stub, workplace)==false {
+		return shim.Error("Incorrect workplace id. Must be a valid workplace id.")
+	}
+
+	///////////////////////////////////////////////////
+	// 5th param: securitylevel, provided as a string
+	// needs to be recasted to an integer
+	///////////////////////////////////////////////////
+	securityLevel, err := strconv.Atoi(args[4])
 	if err != nil {
 		return shim.Error("Incorrect security level passed. Must be an integer.")
 	}
 
-	var usr = docuser.User{FirstName: args[1], LastName: args[2], SecurityLevel: securityLevel}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	// if we are here, everything seems to be fine, create new user object with infos supplied
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	var usr = docuser.User{FirstName: firstname, LastName: lastname, Workplace: workplace, SecurityLevel: securityLevel}
+
+	///////////////////////////////////////////////////
+	// convert it to a JSON representation
+	///////////////////////////////////////////////////
 	var usrAsBytes,_ = json.Marshal(usr)
+
+	///////////////////////////////////////////////////
+	// put into the blockchain, use userid as key
+	///////////////////////////////////////////////////
 	stub.PutState(userid, usrAsBytes)
-	return shim.Success(nil)
+
+	///////////////////////////////////////////////////
+	// return success
+	///////////////////////////////////////////////////
+	return shim.Success(usrAsBytes)
+}
+
+
+func (s *SmartContract) createWorkplace(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+
+	fmt.Println("Creating new workplace with id: " + args[0])
+	/////////////////////////////////////////////////////////////
+	// creates a new workplace object and stores it in the ledger
+	/////////////////////////////////////////////////////////////
+	if len(args) != 3 {
+		return shim.Error("Incorrect number of arguments. Expecting 2: id, Name, Place")
+	}
+
+	id := args[0]
+	name := args[1]
+	place := args[2]
+
+	var workplace = workplace.Workplace{Name: name, Place: place}
+
+	/////////////////////////////////////////////////////////////
+	// convert to JSON representation
+	/////////////////////////////////////////////////////////////
+	var workplaceAsBytes,err = json.Marshal(workplace)
+
+	if err != nil {
+		return shim.Error("Error during JSON conversion of workplace object.")
+	}
+
+	// store it
+	stub.PutState(id, workplaceAsBytes)
+
+	// return success!
+	return shim.Success(workplaceAsBytes)
+
 }
 
 func (s *SmartContract) queryAllDocs(stub shim.ChaincodeStubInterface) peer.Response {
@@ -312,10 +433,102 @@ func (s *SmartContract) queryAllUser(stub shim.ChaincodeStubInterface) peer.Resp
 	return shim.Success(buffer.Bytes())
 }
 
+func (s *SmartContract) queryAllWorkplaces(stub shim.ChaincodeStubInterface) peer.Response {
+
+	startKey := "workplace0"
+	endKey := "workplace99999"
+
+	resultsIterator, err := stub.GetStateByRange(startKey, endKey)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	// buffer is a JSON array containing QueryResults
+	var buffer bytes.Buffer
+	buffer.WriteString("[")
+
+	bArrayMemberAlreadyWritten := false
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		// Add a comma before array members, suppress it for the first array member
+		if bArrayMemberAlreadyWritten == true {
+			buffer.WriteString(",")
+		}
+		buffer.WriteString("{\"Key\":")
+		buffer.WriteString("\"")
+		buffer.WriteString(queryResponse.Key)
+		buffer.WriteString("\"")
+
+		buffer.WriteString(", \"Record\":")
+		// Record is a JSON object, so we write as-is
+		buffer.WriteString(string(queryResponse.Value))
+		buffer.WriteString("}")
+		bArrayMemberAlreadyWritten = true
+	}
+	buffer.WriteString("]")
+
+	fmt.Printf("- queryAllWorkplaces:\n%s\n", buffer.String())
+
+	return shim.Success(buffer.Bytes())
+}
+
+func (s *SmartContract) queryAll(stub shim.ChaincodeStubInterface, key string) peer.Response {
+
+	startKey := key+"0"
+	endKey := key+"99999"
+
+	resultsIterator, err := stub.GetStateByRange(startKey, endKey)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	// buffer is a JSON array containing QueryResults
+	var buffer bytes.Buffer
+	buffer.WriteString("[")
+
+	bArrayMemberAlreadyWritten := false
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		// Add a comma before array members, suppress it for the first array member
+		if bArrayMemberAlreadyWritten == true {
+			buffer.WriteString(",")
+		}
+		buffer.WriteString("{\"Key\":")
+		buffer.WriteString("\"")
+		buffer.WriteString(queryResponse.Key)
+		buffer.WriteString("\"")
+
+		buffer.WriteString(", \"Record\":")
+		// Record is a JSON object, so we write as-is
+		buffer.WriteString(string(queryResponse.Value))
+		buffer.WriteString("}")
+		bArrayMemberAlreadyWritten = true
+	}
+	buffer.WriteString("]")
+
+	fmt.Printf("- queryAll"+key+":\n%s\n", buffer.String())
+
+	return shim.Success(buffer.Bytes())
+}
+
 func (s *SmartContract) isUser(stub shim.ChaincodeStubInterface, userid string) bool {
 	// quick test to see if a given user is a registered one
 	owner,_ := stub.GetState(userid)
 	return owner != nil
+}
+
+func (s *SmartContract) isWorkplace(stub shim.ChaincodeStubInterface, workplace string) bool {
+	// quick test to see if a given workplace is valid
+	_,err := stub.GetState(workplace)
+	return err==nil
 }
 
 func (s *SmartContract) lendDocument(stub shim.ChaincodeStubInterface, args []string) peer.Response {
@@ -364,7 +577,11 @@ func (s *SmartContract) lendDocument(stub shim.ChaincodeStubInterface, args []st
 
 	// check if we can actually lend the document (CurrentOwner == Owner)
 	if doc.CurrentOwner != doc.Owner {
-		return shim.Error("The document is checked out and cannot be lent at the moment!")
+		/////////////////////////////////////////////////
+		// emit an event
+		/////////////////////////////////////////////////
+		stub.SetEvent("LendOut_Warning", []byte("Document is already lent out: " + docid))
+		return shim.Error("The document is already checked out and not available at the moment.")
 	}
 
 	// now check if security levels are same
@@ -374,6 +591,12 @@ func (s *SmartContract) lendDocument(stub shim.ChaincodeStubInterface, args []st
 		docAsBytes, _ = json.Marshal(doc)
 		stub.PutState(docid, docAsBytes)
 	} else {
+		fmt.Println()
+		fmt.Println("####################### SECURITY ERRROR! #######################")
+		fmt.Println(newOwnerid + " (security level:" + strconv.Itoa(usr.SecurityLevel) + ") tried to access document " + docid + " (security level:" + strconv.Itoa(doc.SecurityLevel)+")")
+		fmt.Println("################################################################")
+		fmt.Println()
+		stub.SetEvent("Security_Error", []byte("User has not the required security level for " + docid))
 		return shim.Error("Security Levels are not compatible.")
 	}
 
@@ -401,7 +624,13 @@ func (s *SmartContract) returnDocument(stub shim.ChaincodeStubInterface, args []
 	if doc.CurrentOwner != returningUser {
 		// this is odd, someone brings the book back that didn't lend it out!
 		// TBA: Event
-		return shim.Error("WARNING: someone else brought the document back!")
+		fmt.Println()
+		fmt.Println("####################### SECURITY ERRROR! #######################")
+		fmt.Println(returningUser + " brought back document " + docid + " although it should have been " + doc.CurrentOwner)
+		fmt.Println("################################################################")
+		fmt.Println()
+		stub.SetEvent("Security_Error", []byte("User has not the required security level for " + docid))
+		return shim.Error("ERROR: someone else brought the document back!")
 	}
 
 	if doc.Owner == doc.CurrentOwner {
@@ -419,6 +648,27 @@ func (s *SmartContract) returnDocument(stub shim.ChaincodeStubInterface, args []
 	stub.PutState(docid,docAsBytes)
 	return shim.Success(nil)
 
+}
+
+func (s *SmartContract) getHistory(stub shim.ChaincodeStubInterface, key string) peer.Response {
+
+	historyIer, err := stub.GetHistoryForKey(key)
+
+	if err != nil {
+		fmt.Println("ERROR while reading the ledger!")
+		return shim.Error("ERROR while reading the ledger!")
+	}
+
+	if historyIer.HasNext() {
+		modification, err := historyIer.Next()
+		if err != nil {
+			fmt.Println("ERROR while reading an entry in the ledger.")
+			return shim.Error("ERROR while reading an entry in the ledger.")
+		}
+		fmt.Println("Returning information about", string(modification.Value))
+	}
+
+	return shim.Success(nil)
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // main function starts up the chaincode in the container during instantiation
