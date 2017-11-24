@@ -8,3 +8,4 @@
 crypto-config
 *.iml
 /Chaincode/docutracker/workplace/*.iml
+/Chaincode/docutracker/Sample_PDFs
