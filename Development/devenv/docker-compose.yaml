@@ -55,19 +55,19 @@ services:
       - CORE_PEER_ADDRESS=peer:7051
       - CORE_PEER_LOCALMSPID=DEFAULT
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp
-    working_dir: /opt/gopath/src/chaincodedev
-    command: /bin/bash -c './script.sh'
+    working_dir: /opt/gopath/src/docutracker
+    command: /bin/bash -c './start.sh'
     volumes:
         - /var/run/:/host/var/run/
         - ./msp:/etc/hyperledger/msp
-        - ./../../go/src/docutracker/:/opt/gopath/src/docutracker
-        - ./:/opt/gopath/src/chaincodedev/
+        - ./:/opt/gopath/src/chaincodedev
+        - ./../go/src/docutracker/:/opt/gopath/src/docutracker
     depends_on:
       - orderer
       - peer
 
   chaincode:
-    container_name: chaincode
+    container_name: schoenhofer
     image: hyperledger/fabric-ccenv
     tty: true
     environment:
@@ -79,12 +79,11 @@ services:
       - CORE_PEER_LOCALMSPID=DEFAULT
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp
     working_dir: /opt/gopath/src/docutracker
-    command: /bin/bash -c 'sleep 6000000'
+    command: /bin/bash -c './buildandinstall.sh'
     volumes:
         - /var/run/:/host/var/run/
         - ./msp:/etc/hyperledger/msp
-        - ../../go/src/:/opt/gopath/src/
-        - ./../../go/src/docutracker/:/opt/gopath/src/docutracker
+        - ./../go/src/docutracker/:/opt/gopath/src/docutracker
     depends_on:
       - orderer
       - peer
