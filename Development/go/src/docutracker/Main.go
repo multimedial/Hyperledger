@@ -19,26 +19,26 @@ package main
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 import (
 
-	////////////////////////////////////////////////////
-	// standard packages
-	////////////////////////////////////////////////////
-	"fmt"
-	"strconv"
-	"encoding/json"
-	"bytes"
+////////////////////////////////////////////////////
+// standard packages
+////////////////////////////////////////////////////
+"fmt"
+"strconv"
+"encoding/json"
+"bytes"
+"time"
+////////////////////////////////////////////////////
+// external packages
+////////////////////////////////////////////////////
+"github.com/hyperledger/fabric/core/chaincode/shim"
+"github.com/hyperledger/fabric/protos/peer"
 
-	////////////////////////////////////////////////////
-	// external packages
-	////////////////////////////////////////////////////
-	"github.com/hyperledger/fabric/core/chaincode/shim"
-	"github.com/hyperledger/fabric/protos/peer"
-
-	////////////////////////////////////////////////////
-	// project-specific sub-packages
-	////////////////////////////////////////////////////
-	"docutracker/document"
-	"docutracker/docuser"
-	"docutracker/workplace"
+////////////////////////////////////////////////////
+// project-specific sub-packages
+////////////////////////////////////////////////////
+"docutracker/document"
+"docutracker/docuser"
+"docutracker/workplace"
 
 )
 
@@ -54,33 +54,7 @@ type SmartContract struct {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func (t *SmartContract) Init(stub shim.ChaincodeStubInterface) peer.Response {
 
-	fmt.Println("######################## Document struct initialized. ########################")
-
-	/*
-	args := stub.GetStringArgs()
-	if len(args) != 3 {
-		return shim.Error("Incorrect arguments. Expecting a key and a value")
-	}
-
-	// Set up any variables or assets here by calling stub.PutState()
-	// We store the key and the value on the ledger
-
-	err := stub.PutState("title", []byte(args[0]))
-	if err != nil {
-		return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[0]))
-	}
-
-	err = stub.PutState("version", []byte(args[1]))
-	if err != nil {
-		return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[1]))
-	}
-
-	err = stub.PutState("owner", []byte(args[2]))
-	if err != nil {
-		return shim.Error(fmt.Sprintf("Failed to create asset: %s", args[2]))
-	}
-*/
-
+	fmt.Println("######################## SmartContract struct initialized. ########################")
 	return shim.Success(nil)
 }
 
@@ -95,7 +69,6 @@ func (t *SmartContract) Invoke (stub shim.ChaincodeStubInterface) peer.Response 
 	// some variables for later use
 	var result string
 	var err error
-
 
 	//////////////////////////////////////////////////////////////////
 	// main branching of functions
@@ -159,7 +132,7 @@ func (t *SmartContract) Invoke (stub shim.ChaincodeStubInterface) peer.Response 
 	if result != "" {
 		return shim.Success([]byte(result))
 	} else {
-	return shim.Error("Method call not recognized: '" + fn + "'")
+		return shim.Error("Method call not recognized: '" + fn + "'")
 	}
 
 }
@@ -184,7 +157,6 @@ func get(stub shim.ChaincodeStubInterface, args []string) (string, error){
 	return string(value), nil
 }
 
-
 func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
 	if len(args) != 2 {
@@ -205,11 +177,10 @@ func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
 }
 
-
 func (s *SmartContract) createDocument(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	 // check arguments provided - we need 5
+	// check arguments provided - we need 5
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	if len(args) != 5 {
 		return shim.Error("Incorrect number of arguments. Expecting 5.")
@@ -248,7 +219,6 @@ func (s *SmartContract) createDocument(stub shim.ChaincodeStubInterface, args []
 	stub.PutState(identityKey, documentAsBytes)
 	return shim.Success(nil)
 }
-
 
 func (s *SmartContract) createUser(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 
@@ -312,7 +282,6 @@ func (s *SmartContract) createUser(stub shim.ChaincodeStubInterface, args []stri
 	///////////////////////////////////////////////////
 	return shim.Success(usrAsBytes)
 }
-
 
 func (s *SmartContract) createWorkplace(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 
@@ -658,15 +627,20 @@ func (s *SmartContract) getHistory(stub shim.ChaincodeStubInterface, key string)
 		fmt.Println("ERROR while reading the ledger!")
 		return shim.Error("ERROR while reading the ledger!")
 	}
-
-	if historyIer.HasNext() {
+	fmt.Println()
+	fmt.Println("Returning ledger history for object '" + key + "':")
+	for historyIer.HasNext() {
 		modification, err := historyIer.Next()
 		if err != nil {
 			fmt.Println("ERROR while reading an entry in the ledger.")
 			return shim.Error("ERROR while reading an entry in the ledger.")
 		}
-		fmt.Println("Returning information about", string(modification.Value))
+
+		fmt.Println("ID: " + modification.TxId)
+		fmt.Println(time.Unix(modification.Timestamp.Seconds, 0))
+		fmt.Println("VALUE: " + string(modification.Value))
 	}
+	fmt.Println()
 
 	return shim.Success(nil)
 }
