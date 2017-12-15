@@ -1,0 +1,22 @@
+{
+   "host":"localhost",
+   "port":"8080",
+   "channelsList": ["vertraulich"],
+   "GOPATH":"../artifacts",
+   "keyValueStore":"/tmp/fabric-client-kvs",
+   "eventWaitTime":"30000",
+   "enableTls":false,
+   "users":[
+      {
+         "username":"admin",
+         "secret":"adminpw"
+      }
+   ],
+   "mysql":{
+      "host":"127.0.0.1",
+      "port":"3306",
+      "database":"fabricexplorer",
+      "username":"root",
+      "passwd":"123456"
+   }
+}

@@ -1,0 +1,1 @@
+CORE_CHAINCODE_ID_NAME=mycc:0 ./docutracker

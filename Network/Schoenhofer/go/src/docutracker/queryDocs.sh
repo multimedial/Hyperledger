@@ -1,0 +1,1 @@
+peer chaincode invoke -n mycc -c '{"Args":["queryAllDocs"]}' -C vertraulich
