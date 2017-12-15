@@ -1,11 +1,5 @@
 
-*.pem
-*.tx
-*.block
-*.pem
-*.pem
-/Network/Schoenhofer/crypto-config
-crypto-config
-*.iml
 /Chaincode/docutracker/workplace/*.iml
 /Chaincode/docutracker/Sample_PDFs
+first-network
+Network/node_modules

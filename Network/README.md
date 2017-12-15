@@ -29,14 +29,14 @@ Der Ablauf ist:
 
 Schritt 1: Aufbau der Infrastruktur
 
-Ins Verzeichnis "Hyperledger/Network/blockchain-explorer/Schoenhofer" wechseln.
+Ins Verzeichnis "Hyperledger/Network/Schoenhofer" wechseln.
 
 Dort:
 
 	./start.sh
 	
 Dies startet die Container und erstellt somit die Infrastruktur der Demo:
-drei Peers, drei CAs, einen Orderer, einen CouchDB Container sowie einen mysql-Container.
+drei Peers, drei CAs, einen Orderer, einen CouchDB Container. Der MySQL Container für den Blockchain Viewer muss händisch erstellt werden, siehe unten.
 
 Zur Kontroller per docker ps feststellen, dass auch alle Container gestartet wurden.
 
@@ -49,17 +49,13 @@ Ich mache dies noch händisch im Moment:
 
 	Starten des MySQL Servers:
 	
-		docker run -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_ROOT_HOST=% -p 3306:3306 mysql/mysql-server
+		docker run -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_ROOT_HOST=% -p 3306:3306 --name mysql mysql/mysql-server
 
-	In einem anderen Terminalfenster per 
+	In einem anderen Terminalfenster dann
 	
-		docker ps 
-	
-	den Namen des SQL Server Containers ermitteln (oder beim Aufruf einen eigenen vergeben), dann...
+		docker exec -it mysql mysql -u root -p
 
-		docker exec -it <NAME DES SQL CONTAINERS> mysql -u root -p
-
-	Eingabe des Passworts ("123456"), dann pasten des Inhaltes von "Hyperledger/Network/blockchain-explorer/fabricexplorer.sql"
+	Eingabe des Passworts ("123456"), dann pasten des Inhaltes von "Hyperledger/Network/db/fabricexplorer.sql"
 
 ]
 
@@ -70,7 +66,7 @@ In den CLI-Container der Blockchain-Infrastruktur wechseln:
 
 	docker exec -it cli bash
 
-Ins Verzeichnis "/opt/gopath/src/docutracker" wechseln per
+Sicherstellen, dass man im Verzeichnis "/opt/gopath/src/docutracker" ist. Dort dann
 	
 	cd /opt/gopath/src/docutracker
 	
@@ -98,7 +94,7 @@ Folgendes in einem nativen Terminal eingeben,also in keinem der Docker Container
 
 Wechseln in 
 
-	"Hyperledger/Network/blockchain-explorer/"
+	"Hyperledger/Network/"
 
 ACHTUNG: da dies ein separates Projekt ist, muss es vor dem ersten Aufruf gebaut werden mit 
 
