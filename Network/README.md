@@ -66,7 +66,7 @@ In den CLI-Container der Blockchain-Infrastruktur wechseln:
 
 	docker exec -it cli bash
 
-Sicherstellen, dass man im Verzeichnis "/opt/gopath/src/docutracker" ist. Dort dann
+Sicherstellen, dass man im Verzeichnis "/opt/gopath/src/docutracker" ist. Ansonsten
 	
 	cd /opt/gopath/src/docutracker
 	
@@ -90,7 +90,7 @@ Ergebniss sollte ohne Fehler sein, und im vorherigen Terminalfenster sollte steh
 
 Schritt 3: Visualisierung
 
-Folgendes in einem nativen Terminal eingeben,also in keinem der Docker Container. 
+Folgendes in einem nativen Terminal eingeben,also in keinem (!!!) der Docker Container. 
 
 Wechseln in 
 
