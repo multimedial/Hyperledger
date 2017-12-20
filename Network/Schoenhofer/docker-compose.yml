@@ -231,13 +231,13 @@ services:
 #      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations
       - CORE_CHAINCODE_KEEPALIVE=10
     working_dir: /opt/gopath/src/docutracker
-    command: /bin/bash
+    command:  /bin/bash
     volumes:
         - /var/run/:/host/var/run/
         - ./../chaincode/:/opt/gopath/src/github.com/
         - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
-        - ./config:/etc/hyperledger/configtx
-        - ./go/src/docutracker/:/opt/gopath/src/docutracker
+        - ./config:/etc/hyperledger/configtx/
+        - ./go/src/docutracker/:/opt/gopath/src/docutracker/
     networks:
         - basic
     depends_on:
@@ -246,6 +246,39 @@ services:
       - peer1.amt2.aufsicht.de
       - peer1.amt3.aufsicht.de
       - couchdb
+      
+      
+  mysql:
+    container_name: mysql
+    build:
+      context: ../db
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_ROOT_HOST=%
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+    ports:
+      - 3306:3306
+    volumes:
+       - /var/run/:/host/var/run/
+    networks:
+      - basic
+      
+  node:
+    container_name: node
+    image: node:alpine
+    user: node
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ../:/home/node/app
+    ports:
+      - 8080:8080
+    command: npm install && monitor.sh
+    networks:
+      - basic
+    depends_on:
+      - mysql
       
   #mysql:
   #  container_name: mysql
