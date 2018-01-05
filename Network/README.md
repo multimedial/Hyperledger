@@ -98,25 +98,20 @@ dann
 
 	./monitor.sh
 	
-Nun sollte es möglich sein im Browser http://localhost:8080 aufzurufen:
-
-![Blockchain-Viewer](https://raw.githubusercontent.com/multimedial/Hyperledger/master/Network/BlockchainViewer.jpg "Blockchain-Viewer")
-
-Dort sollte dann der Blockchain-Viewer zu sehen sein mit den Peers und mindestens einem Block in der Chain.
+Nun sollte es möglich sein im Browser http://localhost:8080 aufzurufen. Dort sollte dann der Blockchain-Viewer zu sehen sein mit den Peers und mindestens einem Block in der Chain.
 
 
 
-** Zur Demo **
+**Demo des Chaincodes**
 
 In den CLI Container wechseln, 
 
-	> docker exec -it cli bash
+	docker exec -it cli bash
 
 und dann 
 
-	> ./demo.sh
+	./demo.sh
 	
 Dies füllt die Blockchain mit Transaktionen und Objekten (Workplaces, User, Dokumente). Dies sollte im Browser zu sehen sein.
 
-
-
+![Blockchain-Viewer](https://raw.githubusercontent.com/multimedial/Hyperledger/master/Network/BlockchainViewer.jpg "Blockchain-Viewer")
