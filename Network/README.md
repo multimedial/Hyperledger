@@ -13,7 +13,7 @@
 - mysql-Docker-Image, zu beziehen per 
 	> docker pull mysql/mysql-server
 	
-- node.js sowie npm für den [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer#requirements) (ist bereits Teil des lokalen Repository, muss nicht bezogen werden)
+- node.js sowie npm für den [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer#requirements) (der Explorer ist bereits Teil des lokalen Repository, er muss nicht erneut bezogen werden)
 
 
 ****************************************
