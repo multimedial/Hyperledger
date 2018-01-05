@@ -19,35 +19,34 @@
 ****************************************
 ## Schritte zum Aufbau des Demo-Netzwerkes: 
 Der Ablauf ist:
-- Aufbau der Infrastruktur
+- Aufziehen der Infrastruktur
 - Vorbereitung und Ausführung des Chaincodes
-- Visualisierung
+- Visualisierung durch den Blockchain-Viewer (optional)
 - Ausführung von Aufrufen*
 
-**Schritt 1: Aufbau der Infrastruktur**
+**Schritt 1: Aufziehen der Infrastruktur**
 
-Ins Verzeichnis "Hyperledger/Network/Schoenhofer" des Repository wechseln:
+Ins Verzeichnis "Hyperledger/Network/Schoenhofer" des Repository wechseln und die Docker-Container per Shell-Skript starten:
 
 	cd Hyperledger/Network/Schoenhofer
+	
 	./start.sh
 	
-Dies startet die Docker Container und erstellt die benötigte Infrastruktur:
+Dies startet die benötigten Docker Container und erstellt somit die benötigte Infrastruktur. Es werden erstellt: 
 
 * drei Peer Nodes (jedes repräsentiert ein Amt bzw lokale Dienststelle)
 * drei Certification Authorities (CA) (für jedes Amt eine),
 * einen Orderer (verteilt und ordnet die Anfragen im Netzwerk), 
 * einen CouchDB Container zur Verwaltung des WorldState für die Peer Nodes.
-
-Der zusätzliche MySQL-Container für den Blockchain-Viewer muss händisch erstellt werden, siehe unten.
+* ein MySQL Container für den optionalen Blockchain-Viewer (siehe "Einschub").
 
 Zur Kontroller per docker ps feststellen, dass auch alle Container gestartet wurden.
 
-
 	Einschub: 
 
-	hier muss der mysql-Container gestartet und mit der [fabricexplorer.sql](https://github.com/multimedial/Hyperledger/blob/master/Network/db/fabricexplorer.sql) SQL-Datei gefüttert werden, damit die Tabellen für den Blockchain-Viewer definiert sind.
+	Der MySql-Container für den optionalen Blockchain-Viewer muss im Moment noch händisch gestartet und die benötigte Datenbank mit der [fabricexplorer.sql](https://github.com/multimedial/Hyperledger/blob/master/Network/db/fabricexplorer.sql) Datei konfiguriert werden. Dies erstellt die benötigten Tabellen.
 
-	Im Moment geschieht dies noch etwas umständlich manuell. Starten des MySQL Server Docker Image mit Root-Passwort "123456" und Akzeptanz jeglichen Hosts von aussen für root-Operationen an der Datenbank:
+	Starten des MySQL Server Docker Image mit Root-Passwort "123456" und Akzeptanz jeglichen Hosts von aussen für root-Operationen an der Datenbank:
 		
 			docker run -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_ROOT_HOST=% -p 3306:3306 --name mysql mysql/mysql-server
 
@@ -55,8 +54,10 @@ Zur Kontroller per docker ps feststellen, dass auch alle Container gestartet wur
 		
 			docker exec -it mysql mysql -u root -p
 
-	Dann Eingabe des vorher definierten root-Passworts "123456", dann Einfügen (per Copy-Paste) des Inhaltes von ["Hyperledger/Network/db/fabricexplorer.sql"](https://github.com/multimedial/Hyperledger/blob/master/Network/db/fabricexplorer.sql), damit die Datenbanktabellen erstellt werden.
-
+	Man wird zur Eingabe des vorher definierten root-Passworts "123456" aufgefordert, dann Einfügen (per Copy-Paste) des Inhaltes von ["Hyperledger/Network/db/fabricexplorer.sql"](https://github.com/multimedial/Hyperledger/blob/master/Network/db/fabricexplorer.sql), damit die benötigten Datenbanktabellen erstellt werden.
+	
+	TODO: 
+	Automatisieren bzw Initialisieren des Docker-Containers mit der SQL Datei.
 	
 
 **Schritt 2: Vorbereitung und Ausführung des Chaincodes**
@@ -65,27 +66,29 @@ In den CLI-Container der Blockchain-Infrastruktur wechseln:
 
 	docker exec -it cli bash
 
-Sicherstellen, dass man im Verzeichnis "/opt/gopath/src/docutracker" ist. Ansonsten
+Sicherstellen, im Verzeichnis "/opt/gopath/src/docutracker" zu sein:
 	
 	cd /opt/gopath/src/docutracker
 	
-Dort dann ausführen:
+Dann ausführen:
 
 	./buildandinstall.sh
 	
-Der Chaincode wird dann gestartet, letzte Zeile sollte sein " [...] starting up ... "
+Der Chaincode wird dann gestartet, letzte Zeile im Terminal sollte sein 
 
-In einem neuen Terminal dann wieder in den CLI-Container einloggen:
+	" [...] starting up ... "
+
+Dieses Terminal zur Kontrolle offen belassen. In einem neuen Terminal wieder in den CLI-Container einloggen:
 
 	docker exec -it cli bash
 	
-den Chaincode instanziieren und starten mit:
+den Chaincode per Shell-Skript instanzieren und starten mit:
 
 	cd /opt/gopath/src/docutracker
-
+	
 	./startcode.sh
 	
-Ergebniss sollte ohne Fehler sein, und im vorherigen Terminalfenster sollte stehen 
+Ergebniss sollte ohne Fehler sein, und im vorherigen Terminal sollte nun stehen:
 
 	...
 	"#### Smartcontract struct initialized #####"
