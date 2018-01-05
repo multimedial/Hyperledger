@@ -93,12 +93,12 @@ Ergebniss sollte ohne Fehler sein, und im vorherigen, offengelassenen Terminal s
 
 **Schritt 3: Visualisierung der Blockchain Operationen**
 
-**ACHTUNG**: da dies ein separates Projekt ist, muss es vor dem ersten Aufruf gebaut werden mit:
+**ACHTUNG**: da dies ein separates Projekt ist, muss es vor dem ersten Aufruf einmal gebaut werden mit:
 
 	cd Hyperledger/Network
 	npm install
 
-Wenn der Blockchain-Viewer einmal erstellt wurde, kann der Blockchain-Viewer starten per Shell-Skript:
+Sobald der Blockchain-Viewer einmal erstellt wurde, kann er per Shell-Skript gestartet werden:
 
 	./monitor.sh
 	
