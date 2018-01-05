@@ -100,7 +100,7 @@ dann
 	
 Nun sollte es möglich sein im Browser http://localhost:8080 aufzurufen:
 
-![Blockchain-Viewer](https://commons.wikimedia.org/wiki/File:Example_de.jpg "Beispielbild")
+![Blockchain-Viewer](https://raw.githubusercontent.com/multimedial/Hyperledger/master/Network/BlockchainViewer.jpg "Blockchain-Viewer")
 
 Dort sollte dann der Blockchain-Viewer zu sehen sein mit den Peers und mindestens einem Block in der Chain.
 
