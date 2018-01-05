@@ -86,7 +86,7 @@ den Chaincode per Shell-Skript instanzieren und starten mit:
 	
 	./startcode.sh
 	
-Ergebniss sollte ohne Fehler sein, und im vorherigen Terminal sollte nun stehen:
+Ergebniss sollte ohne Fehler sein, und im vorherigen, offengelassenen Terminal sollte nun stehen:
 
 	...
 	"#### Smartcontract struct initialized #####"
