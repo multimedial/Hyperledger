@@ -100,7 +100,7 @@ Ergebniss sollte ohne Fehler sein, und im vorherigen, offengelassenen Terminal s
 	cd Hyperledger/Network
 	npm install
 
-Wenn das Projekt einmal gebaut wurde, den Blockchain-Viewer starten:
+Wenn der Blockchain-Viewer einmal erstellt wurde, kann der Blockchain-Viewer starten per Shell-Skript:
 
 	./monitor.sh
 	
