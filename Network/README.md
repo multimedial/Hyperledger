@@ -26,7 +26,7 @@ Ins Verzeichnis "Hyperledger/Network/Schoenhofer" wechseln.
 
 Dort:
 
-	> ./start.sh
+	./start.sh
 	
 Dies startet die Container und erstellt somit die Infrastruktur der Demo:
 drei Peers, drei CAs, einen Orderer, einen CouchDB Container. Der MySQL Container für den Blockchain Viewer muss händisch erstellt werden, siehe unten.
@@ -34,24 +34,23 @@ drei Peers, drei CAs, einen Orderer, einen CouchDB Container. Der MySQL Containe
 Zur Kontroller per docker ps feststellen, dass auch alle Container gestartet wurden.
 
 
-[Einschub: 
+	Einschub: 
 
-hier muss der mysql-Container gestartet und mit der fabricexplorer.sql Datei beschickt werden, damit die Tabellen für den Blockchain-Viewer erstellt werden.
+	hier muss der mysql-Container gestartet und mit der fabricexplorer.sql Datei beschickt werden, damit die Tabellen für den Blockchain-Viewer erstellt werden.
 
-Ich mache dies noch händisch im Moment: 
+	Ich mache dies im Moment manuell:
 
-	Starten des MySQL Servers:
+		Starten des MySQL Servers:
+		
+			docker run -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_ROOT_HOST=% -p 3306:3306 --name mysql mysql/mysql-server
+
+		In einem anderen Terminal:
+		
+			docker exec -it mysql mysql -u root -p
+
+		Eingabe des Passworts ("123456"), dann pasten des Inhaltes von "Hyperledger/Network/db/fabricexplorer.sql", damit die Datenbanktabellen erstellt werden können.
+
 	
-		> docker run -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_ROOT_HOST=% -p 3306:3306 --name mysql mysql/mysql-server
-
-	In einem anderen Terminalfenster dann
-	
-		> docker exec -it mysql mysql -u root -p
-
-	Eingabe des Passworts ("123456"), dann pasten des Inhaltes von "Hyperledger/Network/db/fabricexplorer.sql"
-
-]
-
 
 **Schritt 2: Vorbereitung und Ausführung des Chaincodes**
 
@@ -69,7 +68,7 @@ Dort dann ausführen:
 	
 Der Chaincode wird dann gestartet, letzte Zeile sollte sein " [...] starting up ... "
 
-In einem neuen Terminal dann wieder in den CLI-Container wechseln und den Code instanziieren und starten mit:
+In einem neuen Terminal dann wieder in den CLI-Container, den Code instanziieren und starten mit:
 
 	docker exec -it cli bash
 	
@@ -77,7 +76,9 @@ In einem neuen Terminal dann wieder in den CLI-Container wechseln und den Code i
 	
 	./startcode.sh
 	
-Ergebniss sollte ohne Fehler sein, und im vorherigen Terminalfenster sollte stehen "#### Smartcontract struct initialized #####"
+Ergebniss sollte ohne Fehler sein, und im vorherigen Terminalfenster sollte stehen 
+
+	"#### Smartcontract struct initialized #####"
 
 
 
