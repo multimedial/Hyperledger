@@ -1,39 +1,32 @@
-Prerequisites:
+# Schönhofer Document Tracking POC
+
+## Voraussetzungen
 **************
 - für Hyperledger, siehe https://hyperledger-fabric.readthedocs.io/en/release/prereqs.html, insbesondere Docker und Go-Umgebung
-
 - neueste Hyperledger Binaires und Docker images, zu beziehen per
 	curl -sSL https://goo.gl/byy2Qj | bash -s 1.0.5
 	(Quelle: https://hyperledger-fabric.readthedocs.io/en/release/samples.html#binaries)
-	
 - Dateien aus dem Repository (https://github.com/multimedial/Hyperledger)
-
 - mysql Image, zu beziehen per "docker pull mysql/mysql-server"
-
 - node.js sowie npm 
-
-- für den Blockchain Explorer, siehe 
-https://github.com/hyperledger/blockchain-explorer#requirements
+- für den [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer#requirements)
 
 
-
-
-
-Schritte zum Aufbau des Demo-Netzwerkes:
+## Schritte zum Aufbau des Demo-Netzwerkes: 
 ****************************************
-Der Ablauf ist:
+*Der Ablauf ist:
 - Aufbau der Infrastruktur
 - Vorbereitung und Ausführung des Chaincodes
 - Visualisierung
-- Ausführung von Aufrufen
+- Ausführung von Aufrufen*
 
-Schritt 1: Aufbau der Infrastruktur
+**Schritt 1: Aufbau der Infrastruktur**
 
 Ins Verzeichnis "Hyperledger/Network/Schoenhofer" wechseln.
 
 Dort:
 
-	./start.sh
+	> ./start.sh
 	
 Dies startet die Container und erstellt somit die Infrastruktur der Demo:
 drei Peers, drei CAs, einen Orderer, einen CouchDB Container. Der MySQL Container für den Blockchain Viewer muss händisch erstellt werden, siehe unten.
@@ -49,18 +42,18 @@ Ich mache dies noch händisch im Moment:
 
 	Starten des MySQL Servers:
 	
-		docker run -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_ROOT_HOST=% -p 3306:3306 --name mysql mysql/mysql-server
+		> docker run -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_ROOT_HOST=% -p 3306:3306 --name mysql mysql/mysql-server
 
 	In einem anderen Terminalfenster dann
 	
-		docker exec -it mysql mysql -u root -p
+		> docker exec -it mysql mysql -u root -p
 
 	Eingabe des Passworts ("123456"), dann pasten des Inhaltes von "Hyperledger/Network/db/fabricexplorer.sql"
 
 ]
 
 
-Schritt 2: Vorbereitung und Ausführung des Chaincodes
+**Schritt 2: Vorbereitung und Ausführung des Chaincodes**
 
 In den CLI-Container der Blockchain-Infrastruktur wechseln:
 
@@ -88,9 +81,9 @@ Ergebniss sollte ohne Fehler sein, und im vorherigen Terminalfenster sollte steh
 
 
 
-Schritt 3: Visualisierung
+**Schritt 3: Visualisierung**
 
-Folgendes in einem nativen Terminal eingeben,also in keinem (!!!) der Docker Container. 
+Folgendes in einem anderen, neuen Bash-Terminal eingeben: 
 
 Wechseln in 
 
@@ -98,11 +91,11 @@ Wechseln in
 
 ACHTUNG: da dies ein separates Projekt ist, muss es vor dem ersten Aufruf gebaut werden mit 
 
-	npm install
+	> npm install
 	
 	dann
 
-	./monitor.sh
+	> ./monitor.sh
 	
 dann im Browser http://localhost:8080 aufrufen.
 
@@ -110,15 +103,15 @@ Dort sollte dann der Blockchain-Viewer zu sehen sein mit den Peers und mindesten
 
 
 
-Zur Demo: 
+** Zur Demo **
 
 In den CLI Container wechseln, 
 
-	docker exec -it cli bash
+	> docker exec -it cli bash
 
 und dann 
 
-	./demo.sh
+	> ./demo.sh
 	
 Dies füllt die Blockchain mit Transaktionen und Objekten (Workplaces, User, Dokumente). Dies sollte im Browser zu sehen sein.
 
