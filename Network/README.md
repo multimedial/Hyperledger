@@ -84,21 +84,23 @@ Ergebniss sollte ohne Fehler sein, und im vorherigen Terminalfenster sollte steh
 
 **Schritt 3: Visualisierung**
 
-Folgendes in einem anderen, neuen Bash-Terminal eingeben: 
-
-Wechseln in 
+In einem neuen unabhängigen Terminal in 
 
 	"Hyperledger/Network/"
 
-ACHTUNG: da dies ein separates Projekt ist, muss es vor dem ersten Aufruf gebaut werden mit 
+wechseln und den Blockchain-Viewer starten. 
 
-	> npm install
-	
-	dann
+** ACHTUNG **: da dies ein separates Projekt ist, muss es vor dem ersten Aufruf gebaut werden mit 
 
-	> ./monitor.sh
+	npm install
 	
-dann im Browser http://localhost:8080 aufrufen.
+dann
+
+	./monitor.sh
+	
+Nun sollte es möglich sein im Browser http://localhost:8080 aufzurufen:
+
+![Blockchain-Viewer](https://commons.wikimedia.org/wiki/File:Example_de.jpg "Beispielbild")
 
 Dort sollte dann der Blockchain-Viewer zu sehen sein mit den Peers und mindestens einem Block in der Chain.
 
