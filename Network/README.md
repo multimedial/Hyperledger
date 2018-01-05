@@ -42,11 +42,9 @@ Dies startet die benötigten Docker Container und erstellt somit die benötigte 
 
 Zur Kontroller per docker ps feststellen, dass auch alle Container gestartet wurden.
 
-	Einschub: 
+	Einschub: MySQL-Container für den optionalen Blockchain-Viewer
 
-	Der MySql-Container für den optionalen Blockchain-Viewer muss im Moment noch händisch gestartet und die benötigte Datenbank mit der [fabricexplorer.sql](https://github.com/multimedial/Hyperledger/blob/master/Network/db/fabricexplorer.sql) Datei konfiguriert werden. Dies erstellt die benötigten Tabellen.
-
-	Starten des MySQL Server Docker Image mit Root-Passwort "123456" und Akzeptanz jeglichen Hosts von aussen für root-Operationen an der Datenbank:
+	Der MySql-Container für den optionalen Blockchain-Viewer muss im Moment noch händisch gestartet und die benötigte Datenbank mit der [fabricexplorer.sql](https://github.com/multimedial/Hyperledger/blob/master/Network/db/fabricexplorer.sql) Datei konfiguriert werden. Dies erstellt die benötigten Tabellen. Starten des MySQL Server Docker Image mit Root-Passwort "123456" und Zulassen, dass der DB-Root-User sich auch von externen Hosts an der Datenbank anmelden darf:
 		
 			docker run -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_ROOT_HOST=% -p 3306:3306 --name mysql mysql/mysql-server
 
