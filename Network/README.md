@@ -91,11 +91,9 @@ Ergebniss sollte ohne Fehler sein, und im vorherigen, offengelassenen Terminal s
 	...
 	"#### Smartcontract struct initialized #####"
 
+**Schritt 3: Visualisierung der Blockchain Operationen**
 
-
-**Schritt 3: Visualisierung der Blockchain Operationen **
-
-** ACHTUNG **: da dies ein separates Projekt ist, muss es vor dem ersten Aufruf gebaut werden mit:
+**ACHTUNG**: da dies ein separates Projekt ist, muss es vor dem ersten Aufruf gebaut werden mit:
 
 	cd Hyperledger/Network
 	npm install
@@ -120,9 +118,9 @@ und dann ausführen:
 Dies füllt die Blockchain mit Transaktionen und Objekten (Workplaces, User, Dokumente). Es werden in folgender Reihenfolge erstellt: 
 
 - drei Arbeitsorte ("workplace1", "workplace2", "workplace3")
-- diesen werden 9 Benutzer zugeordnet, drei je workplace1
-- es werden ausserdem 9 Dokumente erstellt mit unterschiedlichen Sicherheitsstufen
+- 9 User
+- 9 Dokumente mit unterschiedlichen Sicherheitsstufen
 
-Dies sollte im Browser als Transaktionen zu sehen sein:
+Die 9 Benutzer werden den Workplaces zugeordnet, drei Benutzer pro Workplace. Diese Operationen sollten alle im Browser als Transaktionen zu sehen sein (Blocknummern und Transaktionen):
 
 ![Blockchain-Viewer](https://raw.githubusercontent.com/multimedial/Hyperledger/master/Network/BlockchainViewer.jpg "Blockchain-Viewer")
