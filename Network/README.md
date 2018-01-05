@@ -3,14 +3,20 @@
 ## Technische Voraussetzungen
 **************
 - für Hyperledger:
-	- siehe https://hyperledger-fabric.readthedocs.io/en/release/prereqs.html, insbesondere Docker und die Go-Umgebung
+	- siehe [Hyperledger Dokumentation](https://hyperledger-fabric.readthedocs.io/en/release/prereqs.html), insbesondere Docker und die Go-Umgebung
+	
 - neueste Hyperledger Binaires und Docker images, laut [Quelle](https://hyperledger-fabric.readthedocs.io/en/release/samples.html#binaries) zu beziehen per 
 	> curl -sSL https://goo.gl/byy2Qj | bash -s 1.0.5
+	
 - die Dateien aus dem [Repository](https://github.com/multimedial/Hyperledger)
+
 - mysql-Docker-Image, zu beziehen per 
 	> docker pull mysql/mysql-server
+	
 - node.js sowie npm 
+
 - für den [Blockchain Explorer](https://github.com/hyperledger/blockchain-explorer#requirements)
+
 
 
 ## Schritte zum Aufbau des Demo-Netzwerkes: 
