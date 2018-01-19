@@ -105,8 +105,8 @@ services:
       # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
       # provide the credentials for ledger to connect to CouchDB.  The username and password must
       # match the username and password set for the associated CouchDB.
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     #command: peer node start
     command: peer node start --peer-chaincodedev=true
@@ -145,8 +145,8 @@ services:
       # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
       # provide the credentials for ledger to connect to CouchDB.  The username and password must
       # match the username and password set for the associated CouchDB.
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
     # command: peer node start --peer-chaincodedev=true
@@ -184,8 +184,8 @@ services:
       # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
       # provide the credentials for ledger to connect to CouchDB.  The username and password must
       # match the username and password set for the associated CouchDB.
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
     # command: peer node start --peer-chaincodedev=true
@@ -209,8 +209,8 @@ services:
     # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
     # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
     environment:
-      - COUCHDB_USER=
-      - COUCHDB_PASSWORD=
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
     ports:
       - 5984:5984
     networks:
@@ -231,13 +231,13 @@ services:
 #      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations
       - CORE_CHAINCODE_KEEPALIVE=10
     working_dir: /opt/gopath/src/docutracker
-    command: /bin/bash
+    command:  /bin/bash
     volumes:
         - /var/run/:/host/var/run/
         - ./../chaincode/:/opt/gopath/src/github.com/
         - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
-        - ./config:/etc/hyperledger/configtx
-        - ./go/src/docutracker/:/opt/gopath/src/docutracker
+        - ./config:/etc/hyperledger/configtx/
+        - ./go/src/docutracker/:/opt/gopath/src/docutracker/
     networks:
         - basic
     depends_on:
@@ -246,6 +246,39 @@ services:
       - peer1.amt2.aufsicht.de
       - peer1.amt3.aufsicht.de
       - couchdb
+      
+      
+  mysql:
+    container_name: mysql
+    image: mysql/mysql-server
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_ROOT_HOST=%
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+    ports:
+      - 3306:3306
+    volumes:
+       - /var/run/:/host/var/run/
+       - ../db/docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
+    networks:
+      - basic
+      
+  node:
+    container_name: node
+    image: node:alpine
+    user: node
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ../node:/home/node/app
+    ports:
+      - 8080:8080
+    command: npm install && monitor.sh
+    networks:
+      - basic
+    depends_on:
+      - mysql
       
   #mysql:
   #  container_name: mysql

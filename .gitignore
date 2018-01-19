@@ -3,3 +3,6 @@
 /Chaincode/docutracker/Sample_PDFs
 first-network
 Network/node_modules
+/bin
+bin
+.vagrant
