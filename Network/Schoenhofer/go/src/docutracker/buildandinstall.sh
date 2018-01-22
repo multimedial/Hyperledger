@@ -1,1 +1,1 @@
-CORE_CHAINCODE_ID_NAME=mycc:0 ./docutracker
+CORE_CHAINCODE_ID_NAME=schoenhoferchaincode:1 ./docutracker
