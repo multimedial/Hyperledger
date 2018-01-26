@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+  <link rel="stylesheet" href="https://v40.pingendo.com/assets/bootstrap/bootstrap-4.0.0-beta.1.css" type="text/css"> </head>
+
+<body class="bg-secondary" onload="preloadItems()">
+  <div class="py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="display-1 text-light" id="workplace"></h1>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <p class="lead text-light">Benutzer am Standort</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <ul id="userlist"> </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <p class="lead text-light">Verfügbare Dokumente:</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <ul id="doclist"> </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+  <script src="js/core.js"></script>
+  <script>
+
+    var url = window.location.href;
+    var workplace = url.split('?')[1].split('=')[1]
+
+    function preloadItems()
+    {
+        loadWorkplace()
+        preloadUsers()
+        preloadDocs()
+    }
+
+    function loadWorkplace()
+    {
+        dataObj = {proposal: {chaincodeId: 'schoenhoferchaincode', fcn: "queryAllWorkplaces", args: [""]}};
+        invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showWorkplace)
+    }
+
+    function preloadDocs() {
+        // query all docs
+        dataObj = {proposal: {chaincodeId: 'schoenhoferchaincode', fcn: "queryAllDocs", args: [""]}};
+        invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showDocs)
+    }
+
+    function preloadUsers() {
+        dataObj = {proposal: {chaincodeId: 'schoenhoferchaincode', fcn: "queryAllUser", args: [""]}};
+        invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showUsers)
+    }
+
+    function showWorkplace(data) {
+
+        $.each(data, function(i, place) {
+            if (place.Key == workplace)
+            {
+                $('#workplace').append(place.Record.Name + ", " + place.Record.Place)
+            }})
+
+        //})
+    }
+
+    function showDocs(data) {
+      $.each(data, function(i, doc) { $('#doclist').append('<li class="list-group-item"><i><b>"'+doc.Record.Title+'"</b></i>  Sicherheitsstufe ' + doc.Record.SecurityLevel + '</li>')
+      })
+    }
+
+    function showUsers(data) {
+
+        $.each(data, function(i, user) {
+                if (user.Record.Workplace == workplace) {
+                    fullName = "<b>" + user.Record.FirstName + " " + user.Record.LastName + "</b> Sicherheitsstufe " + user.Record.SecurityLevel
+                    $('#userlist').append('<li class="list-group-item">' + fullName + '</li>')
+                }
+            }
+        )
+    }
+  </script>
+</body>
+
+</html>
