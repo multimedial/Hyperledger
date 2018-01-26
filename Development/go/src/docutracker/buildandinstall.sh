@@ -1,1 +1,4 @@
-go build &&  CORE_PEER_ADDRESS=peer:7051 CORE_CHAINCODE_ID_NAME=mycc:0 ./docutracker
+CHANNELNAME=vertraulich
+CHAINCODENAME=schoenhoferchaincode
+VERSION=1
+go build &&  CORE_PEER_ADDRESS=peer:7051 CORE_CHAINCODE_ID_NAME=$CHAINCODENAME:$VERSION ./docutracker

@@ -1,1 +1,4 @@
-cd ../docutracker && peer chaincode install -p . -n mycc -v 0 && peer chaincode instantiate -n mycc -v 0 -c '{"Args":["title","abc"]}' -C myc
+CHANNELNAME=vertraulich
+CHAINCODENAME=schoenhoferchaincode
+VERSION=1
+cd ../docutracker && peer chaincode install -p . -n $CHAINCODENAME -v $VERSION && peer chaincode instantiate -n $CHAINCODENAME -v $VERSION -c '{"Args":[""]}' -C $CHANNELNAME

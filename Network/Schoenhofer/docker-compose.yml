@@ -6,7 +6,7 @@
 version: '2'
 
 networks:
-  basic:
+  demo:
  
 services:
   ca1:
@@ -24,7 +24,7 @@ services:
       - ./crypto-config/peerOrganizations/amt1.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_amt1
     networks:
-      - basic
+      - demo
  
   ca2:
     image: hyperledger/fabric-ca
@@ -41,7 +41,7 @@ services:
       - ./crypto-config/peerOrganizations/amt2.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_amt2
     networks:
-      - basic
+      - demo
 
   ca3:
     image: hyperledger/fabric-ca
@@ -58,7 +58,7 @@ services:
       - ./crypto-config/peerOrganizations/amt3.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_amt3
     networks:
-      - basic      
+      - demo      
      
   
   orderer.aufsicht.de:
@@ -82,7 +82,7 @@ services:
         - ./crypto-config/peerOrganizations/amt2.aufsicht.de/peers/peer1.amt2.aufsicht.de/:/etc/hyperledger/msp/peerOrg2
         - ./crypto-config/peerOrganizations/amt3.aufsicht.de/peers/peer1.amt3.aufsicht.de/:/etc/hyperledger/msp/peerOrg3
     networks:
-      - basic
+      - demo
       
   peer1.amt1.aufsicht.de:
     container_name: peer1.amt1.aufsicht.de
@@ -122,7 +122,7 @@ services:
       - orderer.aufsicht.de
       - couchdb
     networks:
-      - basic
+      - demo
       
   peer1.amt2.aufsicht.de:
     container_name: peer1.amt2.aufsicht.de
@@ -162,7 +162,7 @@ services:
       - orderer.aufsicht.de
       - couchdb
     networks:
-      - basic
+      - demo
       
   peer1.amt3.aufsicht.de:
     container_name: peer1.amt3.aufsicht.de
@@ -201,7 +201,7 @@ services:
       - orderer.aufsicht.de
       - couchdb
     networks:
-      - basic
+      - demo
 
   couchdb:
     container_name: couchdb
@@ -214,7 +214,7 @@ services:
     ports:
       - 5984:5984
     networks:
-      - basic
+      - demo
 
   cli:
     container_name: cli
@@ -239,7 +239,7 @@ services:
         - ./config:/etc/hyperledger/configtx/
         - ./go/src/docutracker/:/opt/gopath/src/docutracker/
     networks:
-        - basic
+        - demo
     depends_on:
       - orderer.aufsicht.de
       - peer1.amt1.aufsicht.de
@@ -259,9 +259,9 @@ services:
       - 3306:3306
     volumes:
        - /var/run/:/host/var/run/
-       - ../db/docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
+       - ../db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
-      - basic
+      - demo
       
   node:
     container_name: node
@@ -276,23 +276,18 @@ services:
       - 8080:8080
     command: npm install && monitor.sh
     networks:
-      - basic
+      - demo
     depends_on:
       - mysql
       
-  #mysql:
-  #  container_name: mysql
-  #  image: mysql/mysql-server
-  #  tty: true
-  #  environment:
-  #      - MYSQL_ROOT_HOST=%
-  #      - MYSQL_ROOT_PASSWORD=123456
-  #      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-  #  command: /bin/bash
-  #  volumes:
-  #      - /var/run/:/host/var/run/
-  #      - ./database/fabricexplorer.sql:/docker-entrypoint-initdb.d/fabricexplorer.sql:ro
-  #  ports:
-  #      - 3306:3306
-  #  networks:
-  #     - basic
+  fabric-rest:
+    container_name: fabric-rest
+    image: fabric-rest:latest
+    working_dir: /
+    ports:
+      - 3000:3000
+    command: node node_modules/fabric-rest -d
+    networks:
+      - demo
+    depends_on:
+      - orderer.aufsicht.de
