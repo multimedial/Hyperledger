@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
   <link rel="stylesheet" href="https://v40.pingendo.com/assets/bootstrap/bootstrap-4.0.0-beta.1.css" type="text/css"> </head>
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 <body class="bg-secondary" onload="preloadItems()">
   <div class="py-5">
     <div class="container">
@@ -20,23 +20,90 @@
     <div class="py-5">
     <div class="container">
       <div class="row">
-        <div class="col-md-12">
-          <p class="lead text-light">Benutzer am Standort</p>
+        <div class="col">
+          <p class="lead text-light">Benutzer am Standort:</p>
+        </div>
+        <div class="col">
+              <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Bitte wählen Sie
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="userlist">
+                  </div>
+              </div>
         </div>
       </div>
+
+      <div class="row"><p></p></div>
+
       <div class="row">
-        <div class="col-md-12">
-          <ul id="userlist"> </ul>
+          <div class="col">
+            <p class="lead text-light">führt aus die Aktion:</p>
+            </div>
+            <div class="col">
+              <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Bitte wählen Sie
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="actionlist">
+                    <a class="dropdown-item" onclick="addActionItem({'action':'lendDocument'})">Ausleihe</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" onclick="addActionItem({'action':'returnDocument'})">Rückgabe</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" onclick="addActionItem({'action':'fragt wer hat'})">Prüfung</a>
+                </div>
+            </div>
+          </div>
+      </div>
+
+      <div class="row"><p></p></div>
+
+      <div class="row">
+        <div class="col">
+          <p class="lead text-light">mit Dokument:</p>
+          </div>
+          <div class="col">
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Bitte wählen Sie
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="doclist">
+              </div>
+          </div>
         </div>
       </div>
+
+      <div class="row"><p></p></div>
+      <div class="row"><p></p></div>
+      <div class="row"><p></p></div>
+
       <div class="row">
-        <div class="col-md-12">
-          <p class="lead text-light">Verfügbare Dokumente:</p>
+        
+        <div class="col">
+          <p class="lead text-light">Auszuführende Aktion:</p>
         </div>
+
+        <div class="col">
+            <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton">
+                clear
+            </button>
+        </div>
+
       </div>
+
       <div class="row">
-        <div class="col-md-12">
-          <ul id="doclist"> </ul>
+          <div class="col">
+            <div class="alert alert-light" role="alert" id="actionDescription">
+              ...
+            </div>
+          </div>
+      </div>
+
+      <div class="row">
+        <div class="col"></div>
+        <div class="col"></div>
+        <div class="col">
+          <button type="button" class="btn btn-success" onclick="executeChainCode()">Ausführen</button>
         </div>
       </div>
     </div>
@@ -48,8 +115,7 @@
   <script src="js/core.js"></script>
   <script>
 
-    var url = window.location.href;
-    var workplace = url.split('?')[1].split('=')[1]
+    var workplace = window.location.href.split('?')[1].split('=')[1].replace("#",'')
 
     function preloadItems()
     {
@@ -65,7 +131,6 @@
     }
 
     function preloadDocs() {
-        // query all docs
         dataObj = {proposal: {chaincodeId: 'schoenhoferchaincode', fcn: "queryAllDocs", args: [""]}};
         invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showDocs)
     }
@@ -76,31 +141,70 @@
     }
 
     function showWorkplace(data) {
-
         $.each(data, function(i, place) {
             if (place.Key == workplace)
             {
                 $('#workplace').append(place.Record.Name + ", " + place.Record.Place)
-            }})
-
-        //})
+            }
+        })
     }
 
     function showDocs(data) {
-      $.each(data, function(i, doc) { $('#doclist').append('<li class="list-group-item"><i><b>"'+doc.Record.Title+'"</b></i>  Sicherheitsstufe ' + doc.Record.SecurityLevel + '</li>')
+      $.each(data, function(i, doc) { $('#doclist').append('<a class="dropdown-item" onclick="addActionItem({\'document\':\''+doc.Key+'\'})"><i><b>"'+doc.Record.Title+'"</b></i>  Stufe: ' + doc.Record.SecurityLevel +
+       ' - von ' + doc.Record.Owner + ', derzeit bei ' + doc.Record.CurrentOwner + '</a>')
       })
     }
 
     function showUsers(data) {
-
+        
         $.each(data, function(i, user) {
                 if (user.Record.Workplace == workplace) {
-                    fullName = "<b>" + user.Record.FirstName + " " + user.Record.LastName + "</b> Sicherheitsstufe " + user.Record.SecurityLevel
-                    $('#userlist').append('<li class="list-group-item">' + fullName + '</li>')
+                    fullName = user.Key + ": <b>" + user.Record.FirstName + " " + user.Record.LastName + "</b> Sicherheitsstufe " + user.Record.SecurityLevel
+                    $('#userlist').append('<a class="dropdown-item" onclick="addActionItem({\'user\':\''+user.Key+'\'})">' + fullName + '</a>')
                 }
             }
         )
+
     }
+
+    var settings = {
+      'user':undefined,
+      'action':undefined,
+      'document':undefined
+    }
+
+    function addActionItem(itm) {
+      
+      for (var property in itm) {
+          val = itm[property]
+          if (val!=undefined)
+          {
+            settings[property] = val
+          }
+      }
+
+      console.log(JSON.stringify(settings))
+        
+      $('#actionDescription').html('')
+      $('#actionDescription').text('')
+
+      $('#actionDescription').append("<div class='alert alert-dark'>" + (settings['user'] || "...") + "</div> ")
+      $('#actionDescription').append("<div class='alert alert-dark'>" + (settings['action'] || "...") + "</div> ")
+      $('#actionDescription').append("<div class='alert alert-dark'>" + (settings['document'] || "...") + "</div> ")
+      
+    }
+
+    function executeChainCode()
+    {
+      dataObj = {proposal: {chaincodeId: 'schoenhoferchaincode', fcn: settings['action'], args: [settings['document'], settings['user']]}};
+      invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showResult)
+    }
+
+    function showResult(data)
+    {
+      console.log(JSON.stringify(data))
+    }
+
   </script>
 </body>
 

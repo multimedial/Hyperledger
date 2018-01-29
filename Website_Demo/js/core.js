@@ -1,5 +1,5 @@
-username="chris";
-password = "secret";
+var username="chris";
+var password = "secret";
 
 baseURL = "http://localhost:3000/api/fabric/1_0/"
 
@@ -19,7 +19,7 @@ function invokeChainMethod(method, url, dataObj, callbackFunction) {
                 setTimeout(function () { loadTransaction(data["transactionID"], callbackFunction)}, 3000);
             },
             error: function (data) {
-                alert("ERROR\n"+ JSON.stringify(data));
+                alert("ERROR\n"+JSON.stringify(data));
             }
     });
 
