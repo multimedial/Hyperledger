@@ -19,26 +19,60 @@ package datablob
 // models a trackable document for the document tracking system
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 import (
-"fmt"
-_ "strconv"
-"github.com/hyperledger/fabric/core/chaincode/shim"
-_ "github.com/hyperledger/fabric/protos/peer"
-_ "encoding/json"
-_ "bytes"
+
+	"fmt"
+	_ "strconv"
+	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"github.com/hyperledger/fabric/protos/peer"
+	_ "encoding/json"
+	_ "bytes"
+
 )
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Document implements a document asset owned by a user
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 type Datablob struct {
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// to be JSONED
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	DocID string
 	Data string
+
 }
 
-func Get(stub shim.ChaincodeStubInterface, args []string) (string, error){
+func (t *Datablob) Init(stub shim.ChaincodeStubInterface) peer.Response {
+
+	fmt.Println("######################## Datablob struct initialized. ########################")
+	return shim.Success(nil)
+}
+
+func (t *Datablob) Invoke (stub shim.ChaincodeStubInterface) peer.Response {
+
+	fn, args := stub.GetFunctionAndParameters()
+
+	var result string
+	var err error
+
+	if fn == "set" {
+		result, err = set(stub, args)
+	}
+
+	if fn == "get" {
+		result, err = get(stub, args)
+	}
+
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	// return the result as success payload
+	return shim.Success([]byte(result))
+
+}
+
+func get(stub shim.ChaincodeStubInterface, args []string) (string, error){
 
 	if len(args) != 1 {
 		return "", fmt.Errorf("Inccorrect arguments. Expecting a key.")
@@ -58,7 +92,7 @@ func Get(stub shim.ChaincodeStubInterface, args []string) (string, error){
 	return string(value), nil
 }
 
-func Set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
 	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value.")

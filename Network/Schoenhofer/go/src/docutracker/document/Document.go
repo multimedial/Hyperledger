@@ -22,7 +22,7 @@ import (
 	"fmt"
 	_ "strconv"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	_ "github.com/hyperledger/fabric/protos/peer"
+	"github.com/hyperledger/fabric/protos/peer"
 	_ "encoding/json"
 	_ "bytes"
 	_ "docutracker/docuser"
@@ -43,7 +43,38 @@ type Document struct {
 	DatablobID string
 }
 
-func Get(stub shim.ChaincodeStubInterface, args []string) (string, error){
+
+func (t *Document) Init(stub shim.ChaincodeStubInterface) peer.Response {
+
+	fmt.Println("######################## Document struct initialized. ########################")
+	return shim.Success(nil)
+}
+
+func (t *Document) Invoke (stub shim.ChaincodeStubInterface) peer.Response {
+
+	fn, args := stub.GetFunctionAndParameters()
+
+	var result string
+	var err error
+
+	if fn == "set" {
+		result, err = set(stub, args)
+	}
+
+	if fn == "get" {
+		result, err = get(stub, args)
+	}
+
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	// return the result as success payload
+	return shim.Success([]byte(result))
+
+}
+
+func get(stub shim.ChaincodeStubInterface, args []string) (string, error){
 
 	if len(args) != 1 {
 		return "", fmt.Errorf("Inccorrect arguments. Expecting a key.")
@@ -63,7 +94,7 @@ func Get(stub shim.ChaincodeStubInterface, args []string) (string, error){
 	return string(value), nil
 }
 
-func Set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
 	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value.")

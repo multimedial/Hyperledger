@@ -119,7 +119,6 @@ func (t *SmartContract) Invoke (stub shim.ChaincodeStubInterface) peer.Response 
 		return t.saveData(stub, args)
 	}
 
-
 	if fn == "set" {
 		result, err = set(stub, args)
 	}
@@ -263,7 +262,12 @@ func (s *SmartContract) saveData(stub shim.ChaincodeStubInterface, args[] string
 	////////////////////////////////////////////////////////////
 	// assign the data we received
 	////////////////////////////////////////////////////////////
-	var blob datablob.Datablob(DocID: docid, Data: data_base64encoded)
+	blobid := "BLOB1"
+
+	var blob = datablob.Datablob
+	blob.DocID = docid
+	blob.Data = data_base64encoded
+
 	blobAsBytes, _ = json.Marshal(blob)
 	stub.PutState(blobid, blobAsBytes)
 
