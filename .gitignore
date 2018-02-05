@@ -6,3 +6,4 @@ Network/node_modules
 /bin
 bin
 .vagrant
+/Network/node/node_modules/.bin/*

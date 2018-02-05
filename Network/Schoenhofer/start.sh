@@ -29,7 +29,7 @@ docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/etc/h
 
 
 # peer 1 joins
-docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@amt1.aufsicht.de/msp" peer1.amt1.aufsicht.de peer channel join -b vertraulich.block
+docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@amt1.aufsicht.de/msp" peer1.amt1.aufsicht.de peer channel join -b vertraulich.block --logging-level=notice
 
 # let peer 2 join
 docker exec peer1.amt2.aufsicht.de peer channel fetch config vertraulich.block -o orderer.aufsicht.de:7050 -c vertraulich

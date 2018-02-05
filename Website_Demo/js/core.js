@@ -5,6 +5,8 @@ baseURL = "http://localhost:3000/api/fabric/1_0/"
 
 function invokeChainMethod(method, url, dataObj, callbackFunction) {
 
+        console.log("Sending:")
+        console.log(JSON.stringify(dataObj))
 
         $.ajax({
             type: method,

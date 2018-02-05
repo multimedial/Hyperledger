@@ -1,0 +1,1 @@
+peer chaincode invoke -n schoenhoferchaincode -c '{"Args":["queryAll",""]}' -C vertraulich --logging-level=notice

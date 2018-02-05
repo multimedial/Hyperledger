@@ -40,6 +40,7 @@ type Document struct {
 	Owner string
 	CurrentOwner string
 	SecurityLevel int
+	DatablobID string
 }
 
 func Get(stub shim.ChaincodeStubInterface, args []string) (string, error){

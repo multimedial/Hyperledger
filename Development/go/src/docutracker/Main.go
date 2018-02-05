@@ -19,26 +19,27 @@ package main
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 import (
 
-////////////////////////////////////////////////////
-// standard packages
-////////////////////////////////////////////////////
-"fmt"
-"strconv"
-"encoding/json"
-"bytes"
-"time"
-////////////////////////////////////////////////////
-// external packages
-////////////////////////////////////////////////////
-"github.com/hyperledger/fabric/core/chaincode/shim"
-"github.com/hyperledger/fabric/protos/peer"
+	////////////////////////////////////////////////////
+	// standard packages
+	////////////////////////////////////////////////////
+	"fmt"
+	"strconv"
+	"encoding/json"
+	"bytes"
+	"time"
+	"encoding/base64"
+	////////////////////////////////////////////////////
+	// external packages
+	////////////////////////////////////////////////////
+	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"github.com/hyperledger/fabric/protos/peer"
 
-////////////////////////////////////////////////////
-// project-specific sub-packages
-////////////////////////////////////////////////////
-"docutracker/document"
-"docutracker/docuser"
-"docutracker/workplace"
+	////////////////////////////////////////////////////
+	// project-specific sub-packages
+	////////////////////////////////////////////////////
+	"docutracker/document"
+	"docutracker/docuser"
+	"docutracker/workplace"
 
 )
 
@@ -187,9 +188,11 @@ func (s *SmartContract) createDocument(stub shim.ChaincodeStubInterface, args []
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// store the identityKey (first argument) as this represents the ID of the document
+	// store the docid (first argument) as this represents the ID of the document
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	identityKey := args[0]
+	docid := args[0]
+
+	fmt.Println("Creating new document with id " + args[0])
 
 	title := args[1]
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -214,10 +217,57 @@ func (s *SmartContract) createDocument(stub shim.ChaincodeStubInterface, args []
 		return shim.Error("Either could not convert security level, or level provided is out of range (must be 0 to 3).")
 	}
 
+	fmt.Println("Creating new document with id: " + docid)
 	var doc = document.Document{Title: title, Version: version, Owner: owner, CurrentOwner: owner, SecurityLevel: securityLevel}
 	documentAsBytes, _ := json.Marshal(doc)
-	stub.PutState(identityKey, documentAsBytes)
+	stub.PutState(docid, documentAsBytes)
 	return shim.Success(nil)
+
+}
+
+func (s *SmartContract) saveData(stub shim.ChaincodeStubInterface, args[] string) peer.Response {
+
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2: docid, data")
+	}
+
+	///////////////////////////////////////////////////
+	// 1.st param: docid - document key for the search in the database
+	///////////////////////////////////////////////////
+	docid := args[0]
+
+	data_base64encoded := args[1]
+
+	////////////////////////////////////////////////////////////
+	// check if documentid does exist and fetch object
+	////////////////////////////////////////////////////////////
+	docAsBytes,_ := stub.GetState(docid)
+	if docAsBytes == nil {
+		return shim.Error("Document does not exist.")
+	}
+
+	////////////////////////////////////////////////////////////
+	// cast object from binary representation
+	////////////////////////////////////////////////////////////
+	var doc document.Document
+	err := json.Unmarshal(docAsBytes, &doc)
+	if err != nil {
+		return shim.Error("Error while unmarshalling document from json represention.")
+	}
+
+	////////////////////////////////////////////////////////////
+	// assign the data we received
+	////////////////////////////////////////////////////////////
+	doc.Data = data_base64encoded
+
+	////////////////////////////////////////////////////////////
+	// recast object into binary representation and write to chain
+	////////////////////////////////////////////////////////////
+	docAsBytes, _ = json.Marshal(doc)
+	stub.PutState(docid, docAsBytes)
+
+	return shim.Success("Data was saved sucessfully.")
+
 }
 
 func (s *SmartContract) createUser(stub shim.ChaincodeStubInterface, args []string) peer.Response {
@@ -230,6 +280,8 @@ func (s *SmartContract) createUser(stub shim.ChaincodeStubInterface, args []stri
 	// 1.st param: userid - key for the search in the database
 	///////////////////////////////////////////////////
 	userid := args[0]
+
+	fmt.Println("Creating new user with id " + args[0])
 
 	///////////////////////////////////////////////////
 	// 2.nd param: firstname
@@ -265,6 +317,7 @@ func (s *SmartContract) createUser(stub shim.ChaincodeStubInterface, args []stri
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	// if we are here, everything seems to be fine, create new user object with infos supplied
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	fmt.Println("Creating new user with id: " + userid)
 	var usr = docuser.User{FirstName: firstname, LastName: lastname, Workplace: workplace, SecurityLevel: securityLevel}
 
 	///////////////////////////////////////////////////
@@ -285,7 +338,7 @@ func (s *SmartContract) createUser(stub shim.ChaincodeStubInterface, args []stri
 
 func (s *SmartContract) createWorkplace(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 
-	fmt.Println("Creating new workplace with id: " + args[0])
+	fmt.Println("Creating new workplace with id " + args[0])
 	/////////////////////////////////////////////////////////////
 	// creates a new workplace object and stores it in the ledger
 	/////////////////////////////////////////////////////////////
@@ -509,6 +562,9 @@ func (s *SmartContract) lendDocument(stub shim.ChaincodeStubInterface, args []st
 	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments. Expecting 2: id of document, id of new user")
 	}
+
+	// dump arguments to the console
+	fmt.Println(args)
 
 	docid := args[0]
 	newOwnerid := args[1]

@@ -1,1 +1,1 @@
-peer chaincode invoke -n mycc -c '{"Args":["queryAllUser"]}' -C vertraulich
+peer chaincode invoke -n mycc -c '{"Args":["queryAllUser"]}' -C myc

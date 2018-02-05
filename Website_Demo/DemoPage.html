@@ -8,104 +8,98 @@
   <link rel="stylesheet" href="https://v40.pingendo.com/assets/bootstrap/bootstrap-4.0.0-beta.1.css" type="text/css"> </head>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 <body class="bg-secondary" onload="preloadItems()">
-  <div class="py-5">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <h1 class="display-1 text-light" id="workplace"></h1>
-        </div>
-      </div>
-    </div>
-  </div>
-    <div class="py-5">
-    <div class="container">
-      <div class="row">
-        <div class="col">
-          <p class="lead text-light">Benutzer am Standort:</p>
-        </div>
-        <div class="col">
-              <div class="dropdown">
-                  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Bitte wählen Sie
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="userlist">
-                  </div>
-              </div>
-        </div>
-      </div>
 
-      <div class="row"><p></p></div>
+  <div class="py-5-fluid">
+    <div class="container">
 
       <div class="row">
-          <div class="col">
-            <p class="lead text-light">führt aus die Aktion:</p>
-            </div>
-            <div class="col">
-              <div class="dropdown">
+        <h1 class="display-1 text-light" id="workplace">Lade...</h1>
+      </div>
+
+      <div class="row">
+
+        <div class="col">
+            <iframe src="documents.html" width="800" height="600" frameborder="0"></iframe>
+        </div>
+
+        <div class="col">
+            <div class="container">
+
+            <div class="row">
+              <div class="col">
+                <span class="lead text-light">Benutzer am Standort:</span>
+                <div class="dropdown">
                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Bitte wählen Sie
+                  Verfügbare Benutzer
                 </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="actionlist">
+                &nbsp;
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="userlist"></div>
+                </div>
+              </div>
+            </div>
+
+              <div class="row"><div class="col">&nbsp;</div></div>
+
+            <div class="row">
+              <div class="col">
+                <span class="lead text-light">führt die Aktion aus:</span>
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Verfügbare Aktionen
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="actionlist">
                     <a class="dropdown-item" onclick="addActionItem({'action':'lendDocument'})">Ausleihe</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" onclick="addActionItem({'action':'returnDocument'})">Rückgabe</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" onclick="addActionItem({'action':'fragt wer hat'})">Prüfung</a>
+                  </div>
                 </div>
-            </div>
-          </div>
-      </div>
-
-      <div class="row"><p></p></div>
-
-      <div class="row">
-        <div class="col">
-          <p class="lead text-light">mit Dokument:</p>
-          </div>
-          <div class="col">
-            <div class="dropdown">
-              <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Bitte wählen Sie
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="doclist">
               </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row"><p></p></div>
-      <div class="row"><p></p></div>
-      <div class="row"><p></p></div>
-
-      <div class="row">
-        
-        <div class="col">
-          <p class="lead text-light">Auszuführende Aktion:</p>
-        </div>
-
-        <div class="col">
-            <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton">
-                clear
-            </button>
-        </div>
-
-      </div>
-
-      <div class="row">
-          <div class="col">
-            <div class="alert alert-light" role="alert" id="actionDescription">
-              ...
             </div>
+
+              <div class="row"><div class="col">&nbsp;</div></div>
+
+              <div class="row">
+              <div class="col">
+                <span class="lead text-light">mit den Dokumenten:</span>
+              </div>
+              <div class="col">
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Verfügbare Dokumente
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="doclist">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+              <div class="row">
+              <div class="col">
+                <span class="lead text-light">Chaincode-Methode:</span>
+                <div class="alert alert-light" role="alert" id="actionDescription">
+                  ...
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <button class="btn btn-danger" type="button" id="dropdownMenuButton">
+                  clear
+                </button>
+              </div>
+              <div class="col">
+                <button type="button" class="btn btn-success" onclick="executeChainCode()">Ausführen</button>
+              </div>
+            </div>
+
+          </div>
           </div>
       </div>
+    </div>
 
-      <div class="row">
-        <div class="col"></div>
-        <div class="col"></div>
-        <div class="col">
-          <button type="button" class="btn btn-success" onclick="executeChainCode()">Ausführen</button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -122,6 +116,7 @@
         loadWorkplace()
         preloadUsers()
         preloadDocs()
+        addActionItem({})
     }
 
     function loadWorkplace()
@@ -144,6 +139,7 @@
         $.each(data, function(i, place) {
             if (place.Key == workplace)
             {
+                $('#workplace').text("")
                 $('#workplace').append(place.Record.Name + ", " + place.Record.Place)
             }
         })
@@ -168,9 +164,9 @@
     }
 
     var settings = {
-      'user':undefined,
-      'action':undefined,
-      'document':undefined
+      'user':'...',
+      'action':'...',
+      'document':'...'
     }
 
     function addActionItem(itm) {
@@ -188,10 +184,9 @@
       $('#actionDescription').html('')
       $('#actionDescription').text('')
 
-      $('#actionDescription').append("<div class='alert alert-dark'>" + (settings['user'] || "...") + "</div> ")
-      $('#actionDescription').append("<div class='alert alert-dark'>" + (settings['action'] || "...") + "</div> ")
-      $('#actionDescription').append("<div class='alert alert-dark'>" + (settings['document'] || "...") + "</div> ")
-      
+      $('#actionDescription').append("<div class='alert alert-dark'>" + settings['action'] + "</div> ")
+      $('#actionDescription').append("<div class='alert alert-dark'>" + settings['document'] + "</div> ")
+      $('#actionDescription').append("<div class='alert alert-dark'>" + settings['user'] + "</div> ")
     }
 
     function executeChainCode()
@@ -206,6 +201,7 @@
     }
 
   </script>
+
 </body>
 
 </html>

@@ -1,5 +1,4 @@
-CHAINCODEPATH=.
-CHAINCODENAME=schoenhoferchaincode
-CHAINCODEVERSION=1
 CHANNELNAME=vertraulich
-peer chaincode install -p $CHAINCODEPATH -n $CHAINCODENAME -v $CHAINCODEVERSION && peer chaincode instantiate -n $CHAINCODENAME -v $CHAINCODEVERSION -c '{"Args":[]}' -C $CHANNELNAME
+CHAINCODENAME=schoenhoferchaincode
+VERSION=$1
+peer chaincode install -p . -n $CHAINCODENAME -v $VERSION && peer chaincode instantiate -n $CHAINCODENAME -v $VERSION -c '{"Args":[""]}' -C $CHANNELNAME

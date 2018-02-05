@@ -1,17 +1,19 @@
-peer chaincode invoke -n mycc -c '{"Args":["createUser", "user0", "Chad", "Palaniuk", "workplace1", "0"]}' -C vertraulich && \
+CHANNELNAME=vertraulich &&
+CHAINCODENAME=schoenhoferchaincode &&
+peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createUser", "user1", "Chad", "Palaniuk", "workplace1", "0"]}' -C $CHANNELNAME&& \
 sleep 1 &&
-peer chaincode invoke -n mycc -c '{"Args":["createUser", "user1", "Wolfgang", "Petry", "workplace1", "0"]}' -C vertraulich && \
+peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createUser", "user2", "Wolfgang", "Petry", "workplace1", "0"]}' -C $CHANNELNAME&& \
 sleep 1 && \
-peer chaincode invoke -n mycc -c '{"Args":["createUser", "user2", "Dude", "Lebowski", "workplace1", "0"]}' -C vertraulich && \
+peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createUser", "user3", "Dude", "Lebowski", "workplace1", "0"]}' -C $CHANNELNAME&& \
 sleep 1 && \
-peer chaincode invoke -n mycc -c '{"Args":["createUser", "user3", "Samuel", "Jackson", "workplace2", "1"]}' -C vertraulich && \
+peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createUser", "user4", "Samuel", "Jackson", "workplace2", "1"]}' -C $CHANNELNAME&& \
 sleep 1 && \
-peer chaincode invoke -n mycc -c '{"Args":["createUser", "user4", "Wolf", "Gang", "workplace2", "1"]}' -C vertraulich && \
+peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createUser", "user5", "Wolf", "Gang", "workplace2", "1"]}' -C $CHANNELNAME&& \
 sleep 1 && \
-peer chaincode invoke -n mycc -c '{"Args":["createUser", "user5", "Jim", "Pansen", "workplace2", "1"]}' -C vertraulich && \
+peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createUser", "user6", "Jim", "Pansen", "workplace2", "1"]}' -C $CHANNELNAME&& \
 sleep 1 && \
-peer chaincode invoke -n mycc -c '{"Args":["createUser", "user6", "Bratislav", "Methulski", "workplace3", "2"]}' -C vertraulich && \
+peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createUser", "user7", "Bratislav", "Methulski", "workplace3", "2"]}' -C $CHANNELNAME&& \
 sleep 1 && \
-peer chaincode invoke -n mycc -c '{"Args":["createUser", "user7", "Arvo", "Paert", "workplace3", "2"]}' -C vertraulich && \
+peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createUser", "user8", "Arvo", "Paert", "workplace3", "2"]}' -C $CHANNELNAME&& \
 sleep 1 && \
-peer chaincode invoke -n mycc -c '{"Args":["createUser", "user8", "Towa", "Tei", "workplace3", "2"]}' -C vertraulich
+peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createUser", "user9", "Towa", "Tei", "workplace3", "3"]}' -C $CHANNELNAME

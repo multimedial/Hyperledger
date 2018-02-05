@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Documents</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="https://v40.pingendo.com/assets/bootstrap/bootstrap-4.0.0-beta.1.css" type="text/css"> </head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+</head>
+<body onload="reloadDocs()" class="bg-secondary">
+
+<div class="jumbotron">
+    <h4>Verfügbare Dokumente</h4>
+    <table class="table table-sm table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Titel</th>
+            <th scope="col">Version</th>
+            <th scope="col">Sicherheitsstufe</th>
+            <th scope="col">Autor</th>
+            <th scope="col">Ausgeliehen von</th>
+        </tr>
+        </thead>
+        <tbody id="tbbody">
+        </tbody>
+    </table>
+</div>
+
+<script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+<script src="js/core.js"></script>
+<script>
+    function reloadDocs()
+    {
+        dataObj = {proposal: {chaincodeId: 'schoenhoferchaincode', fcn: "queryAllDocs", args: [""]}};
+        invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showDocs)
+    }
+
+    function showDocs(data) {
+        // reload list of documents
+        //console.log(JSON.stringify(data))
+        $('#tbbody').html("")
+        // iterate through data
+        $.each(data, function(_,entry){
+            owner = entry.Record.Owner
+            currentOwner = entry.Record.CurrentOwner
+            current = [currentOwner, "-"][(owner == currentOwner)?1:0]
+            docid = entry.Key
+            $('#tbbody').append("<tr><td>"+docid+"</td><td><a><a href='#' onclick='loadDocument(docid)'>"+entry.Record.Title+"</a></b></td><td>"+entry.Record.Version+"</td><td>"+entry.Record.SecurityLevel+"</td><td>"+entry.Record.Owner+"</td><td>"+current+"</td>")
+        })
+    }
+
+    function loadDocument(docid)
+    {
+        console.log(docid)
+    }
+</script>
+</body>
+</html>
