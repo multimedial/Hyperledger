@@ -19,7 +19,7 @@
       <div class="row">
 
         <div class="col">
-            <iframe src="documents.html" width="800" height="600" frameborder="0"></iframe>
+            <iframe id="documents" src="documents.html" width="800" height="600" frameborder="0"></iframe>
         </div>
 
         <div class="col">
@@ -51,8 +51,6 @@
                     <a class="dropdown-item" onclick="addActionItem({'action':'lendDocument'})">Ausleihe</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" onclick="addActionItem({'action':'returnDocument'})">Rückgabe</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" onclick="addActionItem({'action':'fragt wer hat'})">Prüfung</a>
                   </div>
                 </div>
               </div>
@@ -86,8 +84,8 @@
 
             <div class="row">
               <div class="col">
-                <button class="btn btn-danger" type="button" id="dropdownMenuButton">
-                  clear
+                <button class="btn btn-danger" type="button" id="dropdownMenuButton" onclick="clearSelection()">
+                  Löschen
                 </button>
               </div>
               <div class="col">
@@ -135,7 +133,8 @@
         invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showUsers)
     }
 
-    function showWorkplace(data) {
+    function showWorkplace(_data) {
+        data = eval(_data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload);
         $.each(data, function(i, place) {
             if (place.Key == workplace)
             {
@@ -145,14 +144,16 @@
         })
     }
 
-    function showDocs(data) {
-      $.each(data, function(i, doc) { $('#doclist').append('<a class="dropdown-item" onclick="addActionItem({\'document\':\''+doc.Key+'\'})"><i><b>"'+doc.Record.Title+'"</b></i>  Stufe: ' + doc.Record.SecurityLevel +
-       ' - von ' + doc.Record.Owner + ', derzeit bei ' + doc.Record.CurrentOwner + '</a>')
-      })
+    function showDocs(_data) {
+        data = eval(_data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload);
+        $('#doclist').html("")
+        $.each(data, function(i, doc) { $('#doclist').append('<a class="dropdown-item" onclick="addActionItem({\'document\':\''+doc.Key+'\'})"><i><b>"'+doc.Record.Title+'"</b></i>  Stufe: ' + doc.Record.SecurityLevel +
+        ' - von ' + doc.Record.Owner + ', derzeit bei ' + doc.Record.CurrentOwner + '</a>')
+        })
     }
 
-    function showUsers(data) {
-        
+    function showUsers(_data) {
+        data = eval(_data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload);
         $.each(data, function(i, user) {
                 if (user.Record.Workplace == workplace) {
                     fullName = user.Key + ": <b>" + user.Record.FirstName + " " + user.Record.LastName + "</b> Sicherheitsstufe " + user.Record.SecurityLevel
@@ -163,11 +164,8 @@
 
     }
 
-    var settings = {
-      'user':'...',
-      'action':'...',
-      'document':'...'
-    }
+    var settings;
+    clearSelection()
 
     function addActionItem(itm) {
       
@@ -197,8 +195,34 @@
 
     function showResult(data)
     {
-      console.log(JSON.stringify(data))
+        $('#documents').attr('src', $('#documents').attr('src'));
+        preloadDocs()
+
+        if (settings["action"] == "lendDocument")
+        {
+            // now query the data for it
+            loadDocument()
+        }
+
     }
+
+    function loadDocument()
+    {
+        dataObj = {proposal: {chaincodeId: 'schoenhoferchaincode', fcn: "getData", args: [settings["document"], settings["user"]]}};
+        invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showPDF)
+    }
+
+    function showPDF(_data) {
+        data = _data.transactionEnvelope.payload.data.actions[0].payload.action.proposal_response_payload.extension.response.payload
+        window.open('data:application/pdf;base64,'+data, '_blank')
+    }
+
+    function clearSelection()
+    {
+        settings = {'user':'...', 'action':'...','document':'...'}
+        addActionItem({})
+    }
+
 
   </script>
 

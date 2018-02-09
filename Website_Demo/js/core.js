@@ -5,9 +5,6 @@ baseURL = "http://localhost:3000/api/fabric/1_0/"
 
 function invokeChainMethod(method, url, dataObj, callbackFunction) {
 
-        console.log("Sending:")
-        console.log(JSON.stringify(dataObj))
-
         $.ajax({
             type: method,
             url: baseURL + url,
@@ -16,11 +13,13 @@ function invokeChainMethod(method, url, dataObj, callbackFunction) {
                 xhr.setRequestHeader("Authorization", "Basic " + btoa("chris:secret"));
             },
             data: dataObj,
-            success: function (data) {
+            success: function (_data) {
                 // isolate the transaction id from it
-                setTimeout(function () { loadTransaction(data["transactionID"], callbackFunction)}, 3000);
+                console.log(_data)
+                setTimeout(function () { loadTransaction(_data["transactionID"], callbackFunction)}, 3500);
             },
-            error: function (data) {
+            error: function (_data) {
+                data = eval(_data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload);
                 alert("ERROR\n"+JSON.stringify(data));
             }
     });
@@ -39,10 +38,7 @@ function loadTransaction(transactionid, assignFunction) {
             xhr.setRequestHeader("Authorization", "Basic " + btoa("chris:secret"));
         },
         success: function (data) {
-            console.log(data);
-            _data = eval(data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload);
-            assignFunction(_data)
-
+            assignFunction(data)
         },
         error: function (data) {
             console.log("ERROR\n"+ JSON.stringify(data));

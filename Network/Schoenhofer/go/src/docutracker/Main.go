@@ -39,7 +39,7 @@ import (
 	"docutracker/document"
 	"docutracker/docuser"
 	"docutracker/workplace"
-	"docutracker/datablob"
+	_"docutracker/datablob"
 
 )
 
@@ -119,6 +119,9 @@ func (t *SmartContract) Invoke (stub shim.ChaincodeStubInterface) peer.Response 
 		return t.saveData(stub, args)
 	}
 
+	if fn == "getData" {
+		return t.getData(stub, args)
+	}
 
 	if fn == "set" {
 		result, err = set(stub, args)
@@ -222,8 +225,7 @@ func (s *SmartContract) createDocument(stub shim.ChaincodeStubInterface, args []
 		return shim.Error("Either could not convert security level, or level provided is out of range (must be 0 to 3).")
 	}
 
-	fmt.Println("Creating new document with id: " + docid)
-	var doc = document.Document{Title: title, Version: version, Owner: owner, CurrentOwner: owner, SecurityLevel: securityLevel}
+	var doc = document.Document{Title: title, Version: version, Owner: owner, CurrentOwner: "", SecurityLevel: securityLevel}
 	documentAsBytes, _ := json.Marshal(doc)
 	stub.PutState(docid, documentAsBytes)
 	return shim.Success(nil)
@@ -240,7 +242,6 @@ func (s *SmartContract) saveData(stub shim.ChaincodeStubInterface, args[] string
 	// 1.st param: docid - document key for the search in the database
 	///////////////////////////////////////////////////
 	docid := args[0]
-
 	data_base64encoded := args[1]
 
 	////////////////////////////////////////////////////////////
@@ -263,18 +264,52 @@ func (s *SmartContract) saveData(stub shim.ChaincodeStubInterface, args[] string
 	////////////////////////////////////////////////////////////
 	// assign the data we received
 	////////////////////////////////////////////////////////////
-	var blob datablob.Datablob(DocID: docid, Data: data_base64encoded)
-	blobAsBytes, _ = json.Marshal(blob)
-	stub.PutState(blobid, blobAsBytes)
-
-	////////////////////////////////////////////////////////////
-	// recast object into binary representation and write to chain
-	////////////////////////////////////////////////////////////
-	docAsBytes, _ = json.Marshal(doc)
-	stub.PutState(docid, docAsBytes)
+	blobid := "blob_"+docid
+	err = stub.PutState(blobid, []byte(data_base64encoded))
+	if err != nil {
+		return shim.Error("Error while saving blob data.")
+	}
 
 	return shim.Success(nil)
 
+}
+
+func (s *SmartContract) getData(stub shim.ChaincodeStubInterface, args[] string) peer.Response {
+
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2: docid, userid")
+	}
+
+	docid := args[0]
+	docAsBytes,err := stub.GetState(docid)
+	if err != nil {
+		return shim.Error("Error while getting the document from the ledger: " + docid)
+	}
+
+	userid := args[1]
+	userAsBytes,_ := stub.GetState(userid)
+	var user docuser.User
+	if json.Unmarshal(userAsBytes, &user) != nil {
+		return shim.Error("Error while unmarshalling user from json represention, the user probably doesn't exist: " + userid)
+	}
+
+	var doc document.Document
+	if json.Unmarshal(docAsBytes, &doc) != nil {
+		return shim.Error("Error while unmarshalling document from json represention.")
+	}
+
+	if user.SecurityLevel < doc.SecurityLevel {
+		return shim.Error("The user is not allowed to get this document due to his or her security level: " + string(user.SecurityLevel) + " " + string(doc.SecurityLevel))
+	}
+
+	dataAsBytes,err := stub.GetState("blob_"+docid)
+
+	if err != nil {
+		return shim.Error("Error while getting the data for document: " + docid)
+	}
+
+	//
+	return shim.Success( dataAsBytes )
 }
 
 func (s *SmartContract) createUser(stub shim.ChaincodeStubInterface, args []string) peer.Response {
@@ -610,7 +645,7 @@ func (s *SmartContract) lendDocument(stub shim.ChaincodeStubInterface, args []st
 	}
 
 	// check if we can actually lend the document (CurrentOwner == Owner)
-	if doc.CurrentOwner != doc.Owner {
+	if doc.CurrentOwner !="" {
 		/////////////////////////////////////////////////
 		// emit an event
 		/////////////////////////////////////////////////
@@ -630,8 +665,9 @@ func (s *SmartContract) lendDocument(stub shim.ChaincodeStubInterface, args []st
 		fmt.Println(newOwnerid + " (security level:" + strconv.Itoa(usr.SecurityLevel) + ") tried to access document " + docid + " (security level:" + strconv.Itoa(doc.SecurityLevel)+")")
 		fmt.Println("################################################################")
 		fmt.Println()
-		stub.SetEvent("Security_Error", []byte("User has not the required security level for " + docid))
-		return shim.Error("Security Levels are not compatible.")
+		errorMsg := "User "+newOwnerid+" has not the required security level for " + docid
+		stub.SetEvent("Security_Error", []byte(errorMsg))
+		return shim.Success([]byte("Security Levels are not compatible."))
 	}
 
 	return shim.Success(nil)
@@ -674,7 +710,7 @@ func (s *SmartContract) returnDocument(stub shim.ChaincodeStubInterface, args []
 	}
 
 	// ok, we bring back the document
-	doc.CurrentOwner = doc.Owner
+	doc.CurrentOwner = ""
 	docAsBytes, err = json.Marshal(doc)
 	if err != nil {
 		return shim.Error("Something went wrong while marshalling the document.")
@@ -709,6 +745,7 @@ func (s *SmartContract) getHistory(stub shim.ChaincodeStubInterface, key string)
 
 	return shim.Success(nil)
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // main function starts up the chaincode in the container during instantiation
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

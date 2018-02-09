@@ -1,1 +1,0 @@
-cd ../chaincodedev && ../chaincodedev/usechaincode.sh && cd ~

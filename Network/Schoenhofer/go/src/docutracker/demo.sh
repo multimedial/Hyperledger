@@ -1,1 +1,1 @@
-./createworkplaces.sh && ./createusers.sh && ./populateLedger.sh && ./pb.sh
+./createworkplaces.sh && ./createusers.sh && ./populateLedger.sh && ./pB.sh

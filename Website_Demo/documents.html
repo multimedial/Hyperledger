@@ -25,6 +25,16 @@
         </tr>
         </thead>
         <tbody id="tbbody">
+        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
         </tbody>
     </table>
 </div>
@@ -40,9 +50,11 @@
         invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showDocs)
     }
 
-    function showDocs(data) {
+    function showDocs(_data) {
         // reload list of documents
         //console.log(JSON.stringify(data))
+        data = eval(_data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload);
+        console.log(data)
         $('#tbbody').html("")
         // iterate through data
         $.each(data, function(_,entry){
@@ -50,14 +62,10 @@
             currentOwner = entry.Record.CurrentOwner
             current = [currentOwner, "-"][(owner == currentOwner)?1:0]
             docid = entry.Key
-            $('#tbbody').append("<tr><td>"+docid+"</td><td><a><a href='#' onclick='loadDocument(docid)'>"+entry.Record.Title+"</a></b></td><td>"+entry.Record.Version+"</td><td>"+entry.Record.SecurityLevel+"</td><td>"+entry.Record.Owner+"</td><td>"+current+"</td>")
+            $('#tbbody').append("<tr><td>"+docid+"</td><td><b>"+entry.Record.Title+"</b></td><td align='center'>"+entry.Record.Version+"</td><td align='center'>"+entry.Record.SecurityLevel+"</td><td>"+entry.Record.Owner+"</td><td>"+current+"</td></tr>")
         })
     }
 
-    function loadDocument(docid)
-    {
-        console.log(docid)
-    }
 </script>
 </body>
 </html>

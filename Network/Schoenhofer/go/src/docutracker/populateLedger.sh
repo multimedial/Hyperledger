@@ -1,6 +1,8 @@
 CHANNELNAME=vertraulich && 
 CHAINCODENAME=schoenhoferchaincode &&
 sleep 1 &&
+peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createDocument", "DOC1", "Pananama Papers", "1", "user1", "0"]}' -C $CHANNELNAME
+sleep 1 &&
 peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createDocument", "DOC2", "WikiLeaks", "1", "user2","0"]}' -C $CHANNELNAME &&
 sleep 1 &&
 peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createDocument", "DOC3", "BKA", "1", "user3", "1"]}' -C $CHANNELNAME &&
@@ -17,6 +19,4 @@ peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createDocument", "DOC8", "
 sleep 1 &&
 peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createDocument", "DOC9", "RSA", "1", "user8", "3"]}' -C $CHANNELNAME &&
 sleep 1 &&
-peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createDocument", "DOC10", "SPON", "1", "user8", "3"]}' -C $CHANNELNAME &&
-sleep 1 &&
-peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createDocument", "DOC1", "Pananama Papers", "1", "user1", "0"]}' -C $CHANNELNAME
+peer chaincode invoke -n $CHAINCODENAME -c '{"Args":["createDocument", "DOC10", "SPON", "1", "user8", "3"]}' -C $CHANNELNAME

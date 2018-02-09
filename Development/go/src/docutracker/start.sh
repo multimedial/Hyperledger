@@ -1,1 +1,0 @@
-cd ../chaincodedev && ./script.sh && ./buildandinstall.sh
