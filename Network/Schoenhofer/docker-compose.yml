@@ -9,6 +9,7 @@ networks:
   demo:
  
 services:
+
   ca1:
     image: hyperledger/fabric-ca
     environment:
@@ -16,10 +17,10 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca-amt1
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.amt1.aufsicht.de-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/765015ee62d8ddc329e4a05cd5b6d68375a46c2d63cbfc340a02c51055137ed5_sk
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/cdbe4ce65e1f44cbe322bda9b877b3d7911e5633624b534567c84a975ae9d78d_sk
     ports:
       - "7054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt1.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/765015ee62d8ddc329e4a05cd5b6d68375a46c2d63cbfc340a02c51055137ed5_sk -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt1.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/cdbe4ce65e1f44cbe322bda9b877b3d7911e5633624b534567c84a975ae9d78d_sk -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/amt1.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_amt1
@@ -33,10 +34,10 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca-amt2
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.amt2.aufsicht.de-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/4fadd2843ca72e06a3b08334c2f62823a63776be2371c31670b1b56b5a4674c5_sk
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/789ef2c2b52a9d24ec2ced58f799384697f25f86d0f8ac6a65c35c9b8189cae4_sk
     ports:
       - "8054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt2.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/4fadd2843ca72e06a3b08334c2f62823a63776be2371c31670b1b56b5a4674c5_sk -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt2.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/789ef2c2b52a9d24ec2ced58f799384697f25f86d0f8ac6a65c35c9b8189cae4_sk -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/amt2.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_amt2
@@ -50,17 +51,16 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca-amt3
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.amt3.aufsicht.de-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/be378e6e52da851fb429618fc05feb78b1d3d5f4ac02891cd0f2ae5f22de9750_sk
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/efdb1f1b28139124e1b6100770fc315a1ee0112c8d23372a24b63e5c5f5009dd_sk
     ports:
       - "9054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt3.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/be378e6e52da851fb429618fc05feb78b1d3d5f4ac02891cd0f2ae5f22de9750_sk -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt3.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/efdb1f1b28139124e1b6100770fc315a1ee0112c8d23372a24b63e5c5f5009dd_sk -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/amt3.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_amt3
     networks:
-      - demo      
-     
-  
+      - demo   
+      
   orderer.aufsicht.de:
     container_name: orderer.aufsicht.de
     image: hyperledger/fabric-orderer
@@ -68,7 +68,7 @@ services:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/vertraulich.block
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/orderer/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer
@@ -286,6 +286,8 @@ services:
     ports:
       - 3000:3000
     command: node node_modules/fabric-rest -d
+    volumes:
+      - ./crypto-config:/creds/
     networks:
       - demo
     depends_on:
