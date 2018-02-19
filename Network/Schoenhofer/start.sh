@@ -70,4 +70,5 @@ docker ps
 docker exec cli bash ./buildandinstall.sh &
 sleep 15
 docker exec cli bash ./usechaincode.sh
+sleep 5
 docker exec cli bash ./demo.sh

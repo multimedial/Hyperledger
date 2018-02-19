@@ -281,13 +281,13 @@ services:
       
   fabric-rest:
     container_name: fabric-rest
-    image: fabric-rest:latest
+    image: fabric-rest:schoenhofer
     working_dir: /
     ports:
       - 3000:3000
     command: node node_modules/fabric-rest -d
     volumes:
-      - ./crypto-config:/creds/
+      - ./crypto-config:/creds
     networks:
       - demo
     depends_on:

@@ -1,0 +1,49 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "memory"
+  },
+  "fabricDataSource": {
+    "name": "fabricDataSource",
+    "connector": "fabric",
+    "keyStoreFile": "/tmp/fabricSDKStore",
+    "AUSER": {
+      "username": "User1@amt1.aufsicht.de",
+      "mspid": "Org1MSP",
+      "cryptoContent": {
+        "privateKey":"/creds/peerOrganizations/amt1.aufsicht.de/users/User1@amt1.aufsicht.de/msp/keystore/e711b818aa7b54756a3e38a5bd4a25fe9551e8e1c7a0e72c862305f5a09dcc88_sk",
+        "signedCert":"/creds/peerOrganizations/amt1.aufsicht.de/users/User1@amt1.aufsicht.de/msp/signcerts/User1@amt1.aufsicht.de-cert.pem"
+      }
+    },
+    "fabricUser": {
+      "username": "Admin@amt1.aufsicht.de",
+      "mspid": "Org1MSP",
+      "cryptoContent": {
+        "privateKey":"/creds/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/keystore/4c3d1e33a4f7762cc1122fc61dede904257741f8ab004d6303ef5503a109d4b3_sk",
+        "signedCert":"/creds/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/signcerts/Admin@amt1.aufsicht.de-cert.pem"
+      }
+    },
+    "COMMENT_orgs":"Referenced by peers to avoid having to configure the same file location multiple times. Change CACertFile locations for your fabric",
+    "orgs": [
+      { "name":"org1", "CACertFile":"/creds/peerOrganizations/amt1.aufsicht.de/ca/ca.amt1.aufsicht.de-cert.pem"},
+      { "name":"org2", "CACertFile":"/creds/peerOrganizations/amt2.aufsicht.de/ca/ca.amt2.aufsicht.de-cert.pem"},
+	  { "name":"org3", "CACertFile":"/creds/peerOrganizations/amt3.aufsicht.de/ca/ca.amt3.aufsicht.de-cert.pem"}
+    ],
+    "COMMENT_peers" : "Configured array is for use with the fabric-sample when running it in a local docker set up. eventURL and publicCertFile not currently used.",
+    "peers": [
+      { "requestURL":"grpc://peer1.amt1.aufsicht.de:7051", "eventURL":"grpc://peer1.amt1.aufsicht.de:7053", "orgIndex":"0", "publicCertFile":"/creds/peerOrganizations/amt1.aufsicht.de/peers/peer1.amt1.aufsicht.de/msp/signcerts/peer1.amt1.aufsicht.de-cert.pem", "hostname":"peer1" },
+	  { "requestURL":"grpc://peer1.amt2.aufsicht.de:7051", "eventURL":"grpc://peer1.amt2.aufsicht.de:7053", "orgIndex":"1", "publicCertFile":"/creds/peerOrganizations/amt2.aufsicht.de/peers/peer1.amt2.aufsicht.de/msp/signcerts/peer1.amt2.aufsicht.de-cert.pem", "hostname":"peer2" },
+	  { "requestURL":"grpc://peer1.amt3.aufsicht.de:7051", "eventURL":"grpc://peer1.amt3.aufsicht.de:7053", "orgIndex":"2", "publicCertFile":"/creds/peerOrganizations/amt3.aufsicht.de/peers/peer1.amt3.aufsicht.de/msp/signcerts/peer1.amt3.aufsicht.de-cert.pem", "hostname":"peer3" }
+    ],
+    "orderers": [
+      { "url":"grpc://orderer.aufsicht.de:7050", "CACertFile":"/creds/ordererOrganizations/aufsicht.de/ca/ca.aufsicht.de-cert.pem", "publicCertFile": "/creds/ordererOrganizations/aufsicht.de/orderers/orderer.aufsicht.de/msp/signcerts/orderer.aufsicht.de-cert.pem", "hostname":"orderer"}
+    ],
+    "COMMENT_channels":"fabric-sdk-node Client class requires channel information to be configured during bootstrap.",
+    "channels": [
+      { "name":"vertraulich", "peersIndex":[0], "orderersIndex":[0] }
+    ],
+    "channels-net_basic": [
+      { "name":"vertraulich", "peersIndex":[0,1,2], "orderersIndex":[0] }
+    ]
+  }
+}
