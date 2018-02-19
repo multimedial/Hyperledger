@@ -67,6 +67,7 @@ docker exec -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@amt3.au
 #########################################################################################
 docker ps
 
-docker exec cli buildandinstall.sh
-docker exec cli usechaincode.sh
-docker exec cli demo.sh
+docker exec cli bash ./buildandinstall.sh &
+sleep 15
+docker exec cli bash ./usechaincode.sh
+docker exec cli bash ./demo.sh
