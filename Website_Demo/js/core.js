@@ -10,12 +10,11 @@ function invokeChainMethod(method, url, dataObj, callbackFunction) {
             url: baseURL + url,
             dataType: 'json',
             beforeSend: function (xhr) {
-                xhr.setRequestHeader("Authorization", "Basic " + btoa("chris:secret"));
+                xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
             },
             data: dataObj,
             success: function (_data) {
                 // isolate the transaction id from it
-                console.log(_data)
                 setTimeout(function () { loadTransaction(_data["transactionID"], callbackFunction)}, 3500);
             },
             error: function (_data) {
@@ -38,7 +37,7 @@ function loadTransaction(transactionid, assignFunction) {
             xhr.setRequestHeader("Authorization", "Basic " + btoa("chris:secret"));
         },
         success: function (data) {
-            assignFunction(data)
+            assignFunction(eval(data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload))
         },
         error: function (data) {
             console.log("ERROR\n"+ JSON.stringify(data));

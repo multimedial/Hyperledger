@@ -17,10 +17,10 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca-amt1
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.amt1.aufsicht.de-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/cdbe4ce65e1f44cbe322bda9b877b3d7911e5633624b534567c84a975ae9d78d_sk
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/0dec23d775a91689b623501e840f420969923b197cbce4003dab8fe2d49706ce_sk
     ports:
-      - "7054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt1.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/cdbe4ce65e1f44cbe322bda9b877b3d7911e5633624b534567c84a975ae9d78d_sk -b admin:adminpw -d'
+      - 7054:7054
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt1.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/0dec23d775a91689b623501e840f420969923b197cbce4003dab8fe2d49706ce_sk -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/amt1.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_amt1
@@ -34,10 +34,10 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca-amt2
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.amt2.aufsicht.de-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/789ef2c2b52a9d24ec2ced58f799384697f25f86d0f8ac6a65c35c9b8189cae4_sk
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/c75de38fd5c4a18fa7eb00772f1651e5d884531c79a9c7ab5b95130a1b2e2eb9_sk
     ports:
-      - "8054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt2.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/789ef2c2b52a9d24ec2ced58f799384697f25f86d0f8ac6a65c35c9b8189cae4_sk -b admin:adminpw -d'
+      - 8054:7054
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt2.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/c75de38fd5c4a18fa7eb00772f1651e5d884531c79a9c7ab5b95130a1b2e2eb9_sk -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/amt2.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_amt2
@@ -51,10 +51,10 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca-amt3
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.amt3.aufsicht.de-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/efdb1f1b28139124e1b6100770fc315a1ee0112c8d23372a24b63e5c5f5009dd_sk
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/c92c1a168447216900d5273fddf59db0b8be93dbc3df1d9c8fea5a4a8debd073_sk
     ports:
-      - "9054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt3.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/efdb1f1b28139124e1b6100770fc315a1ee0112c8d23372a24b63e5c5f5009dd_sk -b admin:adminpw -d'
+      - 9054:7054
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt3.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/c92c1a168447216900d5273fddf59db0b8be93dbc3df1d9c8fea5a4a8debd073_sk -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/amt3.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_amt3

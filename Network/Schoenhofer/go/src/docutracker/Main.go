@@ -358,7 +358,7 @@ func (s *SmartContract) createUser(stub shim.ChaincodeStubInterface, args []stri
 	// if we are here, everything seems to be fine, create new user object with infos supplied
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	fmt.Println("Creating new user with id " + userid)
-	var usr = docuser.User{FirstName: firstname, LastName: lastname, Workplace: workplace, SecurityLevel: securityLevel}
+	var usr = docuser.User{FirstName: firstname, LastName: lastname, WorkplaceID: workplace, SecurityLevel: securityLevel}
 
 	///////////////////////////////////////////////////
 	// convert it to a JSON representation

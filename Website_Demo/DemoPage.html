@@ -133,8 +133,7 @@
         invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showUsers)
     }
 
-    function showWorkplace(_data) {
-        data = eval(_data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload);
+    function showWorkplace(data) {
         $.each(data, function(i, place) {
             if (place.Key == workplace)
             {
@@ -144,18 +143,16 @@
         })
     }
 
-    function showDocs(_data) {
-        data = eval(_data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload);
+    function showDocs(data) {
         $('#doclist').html("")
         $.each(data, function(i, doc) { $('#doclist').append('<a class="dropdown-item" onclick="addActionItem({\'document\':\''+doc.Key+'\'})"><i><b>"'+doc.Record.Title+'"</b></i>  Stufe: ' + doc.Record.SecurityLevel +
         ' - von ' + doc.Record.Owner + ', derzeit bei ' + doc.Record.CurrentOwner + '</a>')
         })
     }
 
-    function showUsers(_data) {
-        data = eval(_data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload);
+    function showUsers(data) {
         $.each(data, function(i, user) {
-                if (user.Record.Workplace == workplace) {
+                if (user.Record.WorkplaceID == workplace) {
                     fullName = user.Key + ": <b>" + user.Record.FirstName + " " + user.Record.LastName + "</b> Sicherheitsstufe " + user.Record.SecurityLevel
                     $('#userlist').append('<a class="dropdown-item" onclick="addActionItem({\'user\':\''+user.Key+'\'})">' + fullName + '</a>')
                 }
@@ -212,8 +209,7 @@
         invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showPDF)
     }
 
-    function showPDF(_data) {
-        data = _data.transactionEnvelope.payload.data.actions[0].payload.action.proposal_response_payload.extension.response.payload
+    function showPDF(data) {
         window.open('data:application/pdf;base64,'+data, '_blank')
     }
 

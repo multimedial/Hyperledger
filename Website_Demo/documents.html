@@ -50,11 +50,9 @@
         invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showDocs)
     }
 
-    function showDocs(_data) {
+    function showDocs(data) {
         // reload list of documents
         //console.log(JSON.stringify(data))
-        data = eval(_data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload);
-        console.log(data)
         $('#tbbody').html("")
         // iterate through data
         $.each(data, function(_,entry){
