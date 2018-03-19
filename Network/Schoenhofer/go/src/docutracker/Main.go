@@ -40,7 +40,7 @@ import (
 	"docutracker/docuser"
 	"docutracker/workplace"
 	_"docutracker/datablob"
-
+	_"strings"
 )
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,6 +67,11 @@ func (t *SmartContract) Init(stub shim.ChaincodeStubInterface) peer.Response {
 func (t *SmartContract) Invoke (stub shim.ChaincodeStubInterface) peer.Response {
 
 	fn, args := stub.GetFunctionAndParameters()
+
+	// some logging
+	fmt.Println()
+	fmt.Println("REQUESTED METHOD CALL: " + fn)
+	fmt.Println()
 
 	// some variables for later use
 	var result string
@@ -266,6 +271,8 @@ func (s *SmartContract) saveData(stub shim.ChaincodeStubInterface, args[] string
 	////////////////////////////////////////////////////////////
 	blobid := "blob_"+docid
 	err = stub.PutState(blobid, []byte(data_base64encoded))
+	doc.DatablobID = blobid
+
 	if err != nil {
 		return shim.Error("Error while saving blob data.")
 	}
@@ -607,8 +614,6 @@ func (s *SmartContract) lendDocument(stub shim.ChaincodeStubInterface, args []st
 		return shim.Error("Incorrect number of arguments. Expecting 2: id of document, id of new user")
 	}
 
-	// dump arguments to the console
-	fmt.Println(args)
 
 	docid := args[0]
 	newOwnerid := args[1]
@@ -633,41 +638,43 @@ func (s *SmartContract) lendDocument(stub shim.ChaincodeStubInterface, args []st
 	// check if security level of new user is same or higher as of doc
 	///////////////////////////////////////////////////////////////////
 	var doc document.Document
-	err := json.Unmarshal(docAsBytes, &doc)
-	if err != nil {
+	if json.Unmarshal(docAsBytes, &doc) != nil {
 		return shim.Error("Error while unmarshalling document from json represention.")
 	}
 
 	var usr docuser.User
-	err = json.Unmarshal(usrAsBytes, &usr)
-	if err != nil {
+	if json.Unmarshal(usrAsBytes, &usr) != nil {
 		return shim.Error("Error while unmarshalling user from json represention.")
-	}
-
-	// check if we can actually lend the document (CurrentOwner == Owner)
-	if doc.CurrentOwner !="" {
-		/////////////////////////////////////////////////
-		// emit an event
-		/////////////////////////////////////////////////
-		stub.SetEvent("LendOut_Warning", []byte("Document is already lent out: " + docid))
-		return shim.Error("The document is already checked out and not available at the moment.")
 	}
 
 	// now check if security levels are same
 	if usr.SecurityLevel >= doc.SecurityLevel {
 		// we are ok, change it!
-		doc.CurrentOwner = newOwnerid
-		docAsBytes, _ = json.Marshal(doc)
-		stub.PutState(docid, docAsBytes)
+		fmt.Println("Security level match for user " + newOwnerid + " [level "+ strconv.Itoa(usr.SecurityLevel) +"] and document " + docid + " [level " + strconv.Itoa(doc.SecurityLevel) + "]: OK")
+		// check if we can actually lend the document (CurrentOwner == Owner)
+		if doc.CurrentOwner !="" {
+			/////////////////////////////////////////////////
+			// emit an event
+			/////////////////////////////////////////////////
+			fmt.Println("Document " + docid + "(level " + strconv.Itoa(doc.SecurityLevel) + ") is not available for lending out!")
+			stub.SetEvent("Event_LendOut_Warning", []byte("Request for " + docid + " by " + newOwnerid + ", but " + doc.CurrentOwner + " has it already."))
+			return shim.Success([]byte("ERROR: document " + docid + " is already checked out by " + doc.CurrentOwner +  " and not available at the moment."))
+		} else {
+			doc.CurrentOwner = newOwnerid
+			docAsBytes, _ = json.Marshal(doc)
+			stub.PutState(docid, docAsBytes)
+			fmt.Println("Lending out successful!")
+			return shim.Success([]byte("SUCCESS: Lending out successful."))
+		}
 	} else {
 		fmt.Println()
-		fmt.Println("####################### SECURITY ERRROR! #######################")
+		fmt.Println("####################### SECURITY WARNING #######################")
 		fmt.Println(newOwnerid + " (security level:" + strconv.Itoa(usr.SecurityLevel) + ") tried to access document " + docid + " (security level:" + strconv.Itoa(doc.SecurityLevel)+")")
 		fmt.Println("################################################################")
 		fmt.Println()
-		errorMsg := "User "+newOwnerid+" has not the required security level for " + docid
-		stub.SetEvent("Security_Error", []byte(errorMsg))
-		return shim.Success([]byte("Security Levels are not compatible."))
+		errorMsg := "User "+newOwnerid+" has not the required security level for " + docid + " which has security level " + strconv.Itoa(usr.SecurityLevel)
+		stub.SetEvent("Event_Security_Error", []byte(errorMsg))
+		return shim.Success([]byte("ERROR: Security Levels are not compatible."))
 	}
 
 	return shim.Success(nil)
@@ -699,7 +706,7 @@ func (s *SmartContract) returnDocument(stub shim.ChaincodeStubInterface, args []
 		fmt.Println(returningUser + " brought back document " + docid + " although it should have been " + doc.CurrentOwner)
 		fmt.Println("################################################################")
 		fmt.Println()
-		stub.SetEvent("Security_Error", []byte("User has not the required security level for " + docid))
+		stub.SetEvent("Event_Security_Error", []byte("User has not the required security level for " + docid))
 		return shim.Error("ERROR: someone else brought the document back!")
 	}
 

@@ -281,7 +281,8 @@ services:
       
   fabric-rest:
     container_name: fabric-rest
-    image: fabric-rest:schoenhofer
+    #image: fabric-rest:schoenhofer
+    image: fabric-rest:latest
     working_dir: /
     ports:
       - 3000:3000

@@ -14,12 +14,12 @@ function invokeChainMethod(method, url, dataObj, callbackFunction) {
             },
             data: dataObj,
             success: function (_data) {
+                console.log(_data)
                 // isolate the transaction id from it
                 setTimeout(function () { loadTransaction(_data["transactionID"], callbackFunction)}, 3500);
             },
             error: function (_data) {
-                data = eval(_data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload);
-                alert("ERROR\n"+JSON.stringify(data));
+                alert("ERROR\n"+JSON.stringify(_data));
             }
     });
 
@@ -36,11 +36,37 @@ function loadTransaction(transactionid, assignFunction) {
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Authorization", "Basic " + btoa("chris:secret"));
         },
-        success: function (data) {
-            assignFunction(eval(data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload))
+        success: function (_data) {
+
+            payload = _data.transactionEnvelope.payload.data.actions[0].payload.action.proposal_response_payload
+            event = payload.extension.events
+            data = payload.extension.response.payload
+
+            if (event.event_name!='')
+            {
+                $('#documents')[0].contentWindow.postMessage(event, "*")
+                return
+            }
+
+            try {
+                data = eval(data)
+            }
+            catch(Exception)
+            {}
+
+            assignFunction(data)
+
         },
         error: function (data) {
             console.log("ERROR\n"+ JSON.stringify(data));
         }
     });
+}
+
+function bin2string(array){
+    var result = "";
+    for(var i = 0; i < array.length; ++i){
+        result+= (String.fromCharCode(array[i]));
+    }
+    return result;
 }

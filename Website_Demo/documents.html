@@ -7,16 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
     <link rel="stylesheet" href="https://v40.pingendo.com/assets/bootstrap/bootstrap-4.0.0-beta.1.css" type="text/css"> </head>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </head>
 <body onload="reloadDocs()" class="bg-secondary">
 
 <div class="jumbotron">
+
     <h4>Verfügbare Dokumente</h4>
     <table class="table table-sm table-striped">
         <thead>
         <tr>
-            <th scope="col">#</th>
+            <th scope="col">ID</th>
             <th scope="col">Titel</th>
             <th scope="col">Version</th>
             <th scope="col">Sicherheitsstufe</th>
@@ -39,13 +41,99 @@
     </table>
 </div>
 
-<script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<div id="dialog-message">
+    <span id="dialog-text"></span>
+</div>
+
+
+<!-- waiting spinner -->
+<div class="modal"><!-- Place at bottom of page --></div>
+<style>
+    /* Start by setting display:none to make this hidden.
+ Then we position it in relation to the viewport window
+ with position:fixed. Width, height, top and left speak
+ for themselves. Background we set to 80% white with
+ our animation centered, and no-repeating */
+    .modal {
+        display:    none;
+        position:   fixed;
+        z-index:    1000;
+        top:        0;
+        left:       0;
+        height:     100%;
+        width:      100%;
+        background: rgba( 255, 255, 255, .8 )
+        url('img/ajax-loader.gif')
+        50% 50%
+        no-repeat;
+    }
+
+    /* When the body has the loading class, we turn
+       the scrollbar off with overflow:hidden */
+    body.loading .modal {
+        overflow: hidden;
+    }
+
+    /* Anytime the body has the loading class, our
+       modal element will be visible */
+    body.loading .modal {
+        display: block;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 <script src="js/core.js"></script>
 <script>
+
+    $body = $("body");
+
+    window.addEventListener('message', function(event) {
+
+        showSpinner(event.data)
+
+        if(event.data==true)
+            return
+        if (event.data==false)
+            return
+
+        txid = event.data.tx_id
+        txt = "<br>"
+        txt += bin2string(event.data.payload.data)
+        temp = "<br><br><a href='http://localhost:3000/api/fabric/1_0/channels/vertraulich/transactions/"+txid+"' target='_new'>[ see raw transaction data provided by REST-server ]</bra>"
+        txt += temp
+
+        $("#dialog-text").html(txt);
+
+        $( "#dialog-message" ).dialog({
+            autoOpen: true,
+            modal: true,
+            title: event.data.event_name,
+            width: 500,
+            buttons: {
+                Ok: function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        });
+    });
+
+
+
+    function showSpinner(val)
+    {
+        if (val==true) {
+            $body.addClass("loading")
+            return
+        }
+        $body.removeClass("loading")
+
+    }
+
     function reloadDocs()
     {
+        showSpinner(1);
         dataObj = {proposal: {chaincodeId: 'schoenhoferchaincode', fcn: "queryAllDocs", args: [""]}};
         invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showDocs)
     }
@@ -62,7 +150,9 @@
             docid = entry.Key
             $('#tbbody').append("<tr><td>"+docid+"</td><td><b>"+entry.Record.Title+"</b></td><td align='center'>"+entry.Record.Version+"</td><td align='center'>"+entry.Record.SecurityLevel+"</td><td>"+entry.Record.Owner+"</td><td>"+current+"</td></tr>")
         })
+        showSpinner(0);
     }
+
 
 </script>
 </body>
