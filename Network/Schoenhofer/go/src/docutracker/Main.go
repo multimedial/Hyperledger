@@ -706,14 +706,14 @@ func (s *SmartContract) returnDocument(stub shim.ChaincodeStubInterface, args []
 		fmt.Println(returningUser + " brought back document " + docid + " although it should have been " + doc.CurrentOwner)
 		fmt.Println("################################################################")
 		fmt.Println()
-		stub.SetEvent("Event_Security_Error", []byte("User has not the required security level for " + docid))
-		return shim.Error("ERROR: someone else brought the document back!")
+		stub.SetEvent("Event_Security_Error", []byte("Mitarbeiter " + returningUser + " versuchte Dokument " + docid + " zurückzubringen. Dokument war ausgeliehen von " + doc.CurrentOwner + "."))
+		return shim.Success([]byte("ERROR: someone else brought the document back!"))
 	}
 
 	if doc.Owner == doc.CurrentOwner {
 		// error - this document cannot be brought back,
 		// as it is not lend out!
-		return shim.Error("The document cannot be given back: current owner is the owner.")
+		return shim.Success([]byte("The document cannot be given back: current owner is the owner."))
 	}
 
 	// ok, we bring back the document
@@ -723,7 +723,7 @@ func (s *SmartContract) returnDocument(stub shim.ChaincodeStubInterface, args []
 		return shim.Error("Something went wrong while marshalling the document.")
 	}
 	stub.PutState(docid,docAsBytes)
-	return shim.Success(nil)
+	return shim.Success([]byte("Das Dokument wurde erfolgreich zurückgegeben und kann wieder ausgeliehen werden."))
 
 }
 
@@ -737,6 +737,9 @@ func (s *SmartContract) getHistory(stub shim.ChaincodeStubInterface, key string)
 	}
 	fmt.Println()
 	fmt.Println("Returning ledger history for object '" + key + "':")
+
+	var buffer bytes.Buffer
+
 	for historyIer.HasNext() {
 		modification, err := historyIer.Next()
 		if err != nil {
@@ -744,13 +747,14 @@ func (s *SmartContract) getHistory(stub shim.ChaincodeStubInterface, key string)
 			return shim.Error("ERROR while reading an entry in the ledger.")
 		}
 
-		fmt.Println("ID: " + modification.TxId)
-		fmt.Println(time.Unix(modification.Timestamp.Seconds, 0))
-		fmt.Println("VALUE: " + string(modification.Value))
+		buffer.WriteString("TX_ID: " + modification.TxId + "\n")
+		buffer.WriteString(time.Unix(modification.Timestamp.Seconds, 0).String()+"\n")
+		buffer.WriteString("VALUES: " + string(modification.Value))
+		buffer.WriteString("\n\n")
 	}
-	fmt.Println()
+	fmt.Println(buffer.String())
 
-	return shim.Success(nil)
+	return shim.Success(buffer.Bytes())
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

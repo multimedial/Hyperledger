@@ -3,12 +3,12 @@
 		"orderer": [{
 			"url": "grpcs://127.0.0.1:7050",
 			"server-hostname": "orderer.aufsicht.de",
-			"tls_cacerts": "/Schoenhofer/crypto-config/ordererOrganizations/aufsicht.de/orderers/orderer.aufsicht.de/tls/ca.crt"
+			"tls_cacerts": "../Schoenhofer/crypto-config/ordererOrganizations/aufsicht.de/orderers/orderer.aufsicht.de/tls/ca.crt"
 		}],
 		"ca": [{
 			"url": "grpc://127.0.0.1:7054",
 			"server-hostname": "ca.aufsicht.de",
-			"tls_cacerts": "/Schoenhofer/crypto-config/ordererOrganizations/aufsicht.de/orderers/orderer.aufsicht.de/tls/ca.crt"
+			"tls_cacerts": "../Schoenhofer/crypto-config/ordererOrganizations/aufsicht.de/orderers/orderer.aufsicht.de/tls/ca.crt"
 		}],
 		"Org1": {
 			"name": "peer1.amt1.aufsicht.de",
@@ -17,11 +17,11 @@
 				"requests": "grpcs://127.0.0.1:7051",
 				"events": "grpcs://127.0.0.1:7053",
 				"server-hostname": "peer1.amt1.aufsicht.de",
-				"tls_cacerts": "/Schoenhofer/crypto-config/peerOrganizations/amt1.aufsicht.de/peers/peer1.amt1.aufsicht.de/tls/ca.crt"
+				"tls_cacerts": "../Schoenhofer/crypto-config/peerOrganizations/amt1.aufsicht.de/peers/peer1.amt1.aufsicht.de/tls/ca.crt"
 			},
 			"admin": {
-				"key": "/Schoenhofer/crypto-config/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/keystore",
-				"cert": "/Schoenhofer/crypto-config/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/signcerts"
+				"key": "../Schoenhofer/crypto-config/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/keystore",
+				"cert": "../Schoenhofer/crypto-config/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/signcerts"
 			}
 		},
 		"Org2": {
@@ -31,11 +31,11 @@
 				"requests": "grpcs://127.0.0.1:8051",
 				"events": "grpcs://127.0.0.1:8053",
 				"server-hostname": "peer1.amt2.aufsicht.de",
-				"tls_cacerts": "/Schoenhofer/crypto-config/peerOrganizations/amt2.aufsicht.de/peers/peer1.amt2.aufsicht.de/tls/ca.crt"
+				"tls_cacerts": "../Schoenhofer/crypto-config/peerOrganizations/amt2.aufsicht.de/peers/peer1.amt2.aufsicht.de/tls/ca.crt"
 			},
 			"admin": {
-				"key": "/Schoenhofer/crypto-config/peerOrganizations/amt2.aufsicht.de/users/Admin@amt2.aufsicht.de/msp/keystore",
-				"cert": "/Schoenhofer/crypto-config/peerOrganizations/amt2.aufsicht.de/users/Admin@amt2.aufsicht.de/msp/signcerts"
+				"key": "../Schoenhofer/crypto-config/peerOrganizations/amt2.aufsicht.de/users/Admin@amt2.aufsicht.de/msp/keystore",
+				"cert": "../Schoenhofer/crypto-config/peerOrganizations/amt2.aufsicht.de/users/Admin@amt2.aufsicht.de/msp/signcerts"
 			}
 		},
 		"Org3": {
@@ -45,11 +45,11 @@
 				"requests": "grpcs://127.0.0.1:9051",
 				"events": "grpcs://127.0.0.1:9053",
 				"server-hostname": "peer1.amt3.aufsicht.de",
-				"tls_cacerts": "/Schoenhofer/crypto-config/peerOrganizations/amt3.aufsicht.de/peers/peer1.amt3.aufsicht.de/tls/ca.crt"
+				"tls_cacerts": "../Schoenhofer/crypto-config/peerOrganizations/amt3.aufsicht.de/peers/peer1.amt3.aufsicht.de/tls/ca.crt"
 			},
 			"admin": {
-				"key": "/Schoenhofer/crypto-config/peerOrganizations/amt3.aufsicht.de/users/Admin@amt3.aufsicht.de/msp/keystore",
-				"cert": "/Schoenhofer/crypto-config/peerOrganizations/amt3.aufsicht.de/users/Admin@amt3.aufsicht.de/msp/signcerts"
+				"key": "../Schoenhofer/crypto-config/peerOrganizations/amt3.aufsicht.de/users/Admin@amt3.aufsicht.de/msp/keystore",
+				"cert": "../Schoenhofer/crypto-config/peerOrganizations/amt3.aufsicht.de/users/Admin@amt3.aufsicht.de/msp/signcerts"
 			}
 		}
 	}

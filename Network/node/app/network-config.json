@@ -14,8 +14,8 @@
 				"server-hostname": "peer1.amt1.aufsicht.de"
 			},
 			"admin": {
-				"key": "/Schoenhofer/crypto-config/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/keystore",
-				"cert": "/Schoenhofer/crypto-config/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/signcerts"
+				"key": "../Schoenhofer/crypto-config/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/keystore",
+				"cert": "../Schoenhofer/crypto-config/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/signcerts"
 			}
 		},
 		"org2": {
@@ -28,8 +28,8 @@
 				"server-hostname": "peer1.amt2.aufsicht.de"
 			},
 			"admin": {
-				"key": "/Schoenhofer/crypto-config/peerOrganizations/amt2.aufsicht.de/users/Admin@amt2.aufsicht.de/msp/keystore",
-				"cert": "/Schoenhofer/crypto-config/peerOrganizations/amt2.aufsicht.de/users/Admin@amt2.aufsicht.de/msp/signcerts"
+				"key": "../Schoenhofer/crypto-config/peerOrganizations/amt2.aufsicht.de/users/Admin@amt2.aufsicht.de/msp/keystore",
+				"cert": "../Schoenhofer/crypto-config/peerOrganizations/amt2.aufsicht.de/users/Admin@amt2.aufsicht.de/msp/signcerts"
 			}
 		},
 		"org3": {
@@ -42,8 +42,8 @@
 				"server-hostname": "peer1.amt3.aufsicht.de"
 			},
 			"admin": {
-				"key": "/Schoenhofer/crypto-config/peerOrganizations/amt3.aufsicht.de/users/Admin@amt3.aufsicht.de/msp/keystore",
-				"cert": "/Schoenhofer/crypto-config/peerOrganizations/amt3.aufsicht.de/users/Admin@amt3.aufsicht.de/msp/signcerts"
+				"key": "../Schoenhofer/crypto-config/peerOrganizations/amt3.aufsicht.de/users/Admin@amt3.aufsicht.de/msp/keystore",
+				"cert": "../Schoenhofer/crypto-config/peerOrganizations/amt3.aufsicht.de/users/Admin@amt3.aufsicht.de/msp/signcerts"
 			}
 		}
 	}

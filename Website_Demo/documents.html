@@ -148,9 +148,35 @@
             currentOwner = entry.Record.CurrentOwner
             current = [currentOwner, "-"][(owner == currentOwner)?1:0]
             docid = entry.Key
-            $('#tbbody').append("<tr><td>"+docid+"</td><td><b>"+entry.Record.Title+"</b></td><td align='center'>"+entry.Record.Version+"</td><td align='center'>"+entry.Record.SecurityLevel+"</td><td>"+entry.Record.Owner+"</td><td>"+current+"</td></tr>")
+            $('#tbbody').append("<tr><td><a href='#' onclick=getHistory('"+docid+"')>"+docid+"</a></td><td><b>"+entry.Record.Title+"</b></td><td align='center'>"+entry.Record.Version+"</td><td align='center'>"+entry.Record.SecurityLevel+"</td><td>"+entry.Record.Owner+"</td><td>"+current+"</td></tr>")
         })
         showSpinner(0);
+    }
+
+    function getHistory(docid)
+    {
+        showSpinner(1);
+        dataObj = {proposal: {chaincodeId: 'schoenhoferchaincode', fcn: "getHistory", args: [docid]}};
+        invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showHistory)
+    }
+
+    function showHistory(data)
+    {
+        showSpinner(0);
+        title = "DOCUMENT HISTORY"
+        $("#dialog-text").html("<pre>" + data + "</pre>");
+
+        $( "#dialog-message" ).dialog({
+            autoOpen: true,
+            modal: true,
+            title: title,
+            width: 700,
+            buttons: {
+                Ok: function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        });
     }
 
 

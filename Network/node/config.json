@@ -2,7 +2,7 @@
    "host":"localhost",
    "port":"8080",
    "channelsList": ["vertraulich"],
-   "GOPATH":"../artifacts",
+   "GOPATH":"../channel-artifacts",
    "keyValueStore":"/tmp/fabric-client-kvs",
    "eventWaitTime":"30000",
    "enableTls":false,
