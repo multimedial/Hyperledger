@@ -1,49 +1,49 @@
 {
 	"network-config": {
 		"orderer": [{
-			"url": "grpc://127.0.0.1:7050",
+			"url": "grpc://orderer.aufsicht.de:7050",
 			"server-hostname": "orderer.aufsicht.de"
 			}],
 		"org1": {
 			"name": "Amt1",
 			"mspid": "Org1MSP",
-			"ca": "http://127.0.0.1:7054",
+			"ca": "http://ca_amt1:7054",
 			"peer1": {
-				"requests": "grpc://127.0.0.1:7051",
-				"events": "grpc://127.0.0.1:7053",
+				"requests": "grpc://peer1.amt1.aufsicht.de:7051",
+				"events": "grpc://peer1.amt1.aufsicht.de:7053",
 				"server-hostname": "peer1.amt1.aufsicht.de"
 			},
 			"admin": {
-				"key": "../Schoenhofer/crypto-config/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/keystore",
-				"cert": "../Schoenhofer/crypto-config/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/signcerts"
+				"key": "../crypto-config/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/keystore",
+				"cert": "../crypto-config/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/signcerts"
 			}
 		},
 		"org2": {
 			"name": "Amt2",
 			"mspid": "Org2MSP",
-			"ca": "http://127.0.0.1:8054",
+			"ca": "http://ca_amt2:8054",
 			"peer1": {
-				"requests": "grpc://127.0.0.1:8051",
-				"events": "grpc://127.0.0.1:8053",
+				"requests": "grpc://peer1.amt2.aufsicht.de:8051",
+				"events": "grpc://peer1.amt2.aufsicht.de:8053",
 				"server-hostname": "peer1.amt2.aufsicht.de"
 			},
 			"admin": {
-				"key": "../Schoenhofer/crypto-config/peerOrganizations/amt2.aufsicht.de/users/Admin@amt2.aufsicht.de/msp/keystore",
-				"cert": "../Schoenhofer/crypto-config/peerOrganizations/amt2.aufsicht.de/users/Admin@amt2.aufsicht.de/msp/signcerts"
+				"key": "../crypto-config/peerOrganizations/amt2.aufsicht.de/users/Admin@amt2.aufsicht.de/msp/keystore",
+				"cert": "../crypto-config/peerOrganizations/amt2.aufsicht.de/users/Admin@amt2.aufsicht.de/msp/signcerts"
 			}
 		},
 		"org3": {
 			"name": "Amt3",
 			"mspid": "Org3MSP",
-			"ca": "http://127.0.0.1:9054",
+			"ca": "http://ca_amt3:9054",
 			"peer1": {
-				"requests": "grpc://127.0.0.1:9051",
-				"events": "grpc://127.0.0.1:9053",
+				"requests": "grpc://peer1.amt3.aufsicht.de:9051",
+				"events": "grpc://peer1.amt3.aufsicht.de:9053",
 				"server-hostname": "peer1.amt3.aufsicht.de"
 			},
 			"admin": {
-				"key": "../Schoenhofer/crypto-config/peerOrganizations/amt3.aufsicht.de/users/Admin@amt3.aufsicht.de/msp/keystore",
-				"cert": "../Schoenhofer/crypto-config/peerOrganizations/amt3.aufsicht.de/users/Admin@amt3.aufsicht.de/msp/signcerts"
+				"key": "../crypto-config/peerOrganizations/amt3.aufsicht.de/users/Admin@amt3.aufsicht.de/msp/keystore",
+				"cert": "../crypto-config/peerOrganizations/amt3.aufsicht.de/users/Admin@amt3.aufsicht.de/msp/signcerts"
 			}
 		}
 	}

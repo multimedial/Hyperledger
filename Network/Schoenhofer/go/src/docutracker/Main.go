@@ -706,7 +706,7 @@ func (s *SmartContract) returnDocument(stub shim.ChaincodeStubInterface, args []
 		fmt.Println(returningUser + " brought back document " + docid + " although it should have been " + doc.CurrentOwner)
 		fmt.Println("################################################################")
 		fmt.Println()
-		stub.SetEvent("Event_Security_Error", []byte("Mitarbeiter " + returningUser + " versuchte Dokument " + docid + " zurückzubringen. Dokument war ausgeliehen von " + doc.CurrentOwner + "."))
+		stub.SetEvent("Event_Security_Error", []byte("User " + returningUser + " tried to return " + docid + ". Document is lend out by " + doc.CurrentOwner + "."))
 		return shim.Success([]byte("ERROR: someone else brought the document back!"))
 	}
 
@@ -723,7 +723,7 @@ func (s *SmartContract) returnDocument(stub shim.ChaincodeStubInterface, args []
 		return shim.Error("Something went wrong while marshalling the document.")
 	}
 	stub.PutState(docid,docAsBytes)
-	return shim.Success([]byte("Das Dokument wurde erfolgreich zurückgegeben und kann wieder ausgeliehen werden."))
+	return shim.Success([]byte("The document was successfully returned and can be lend out again."))
 
 }
 

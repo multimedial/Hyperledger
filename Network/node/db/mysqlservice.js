@@ -33,8 +33,9 @@ function handleDisconnect() {
         port: port,
         user: mysqlconfig.username,
         password: mysqlconfig.passwd,
-        database:mysqlconfig.database
-    });
+        database:mysqlconfig.database,
+		insecureAuth: true
+		});
 
     connection.connect(function(err) {
         // The server is either down

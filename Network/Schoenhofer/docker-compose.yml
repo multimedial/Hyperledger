@@ -9,58 +9,7 @@ networks:
   demo:
  
 services:
-
-  ca1:
-    image: hyperledger/fabric-ca
-    environment:
-      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca-amt1
-      - FABRIC_CA_SERVER_TLS_ENABLED=true
-      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.amt1.aufsicht.de-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/0dec23d775a91689b623501e840f420969923b197cbce4003dab8fe2d49706ce_sk
-    ports:
-      - 7054:7054
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt1.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/0dec23d775a91689b623501e840f420969923b197cbce4003dab8fe2d49706ce_sk -b admin:adminpw -d'
-    volumes:
-      - ./crypto-config/peerOrganizations/amt1.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
-    container_name: ca_amt1
-    networks:
-      - demo
- 
-  ca2:
-    image: hyperledger/fabric-ca
-    environment:
-      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca-amt2
-      - FABRIC_CA_SERVER_TLS_ENABLED=true
-      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.amt2.aufsicht.de-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/c75de38fd5c4a18fa7eb00772f1651e5d884531c79a9c7ab5b95130a1b2e2eb9_sk
-    ports:
-      - 8054:7054
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt2.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/c75de38fd5c4a18fa7eb00772f1651e5d884531c79a9c7ab5b95130a1b2e2eb9_sk -b admin:adminpw -d'
-    volumes:
-      - ./crypto-config/peerOrganizations/amt2.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
-    container_name: ca_amt2
-    networks:
-      - demo
-
-  ca3:
-    image: hyperledger/fabric-ca
-    environment:
-      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca-amt3
-      - FABRIC_CA_SERVER_TLS_ENABLED=true
-      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.amt3.aufsicht.de-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/c92c1a168447216900d5273fddf59db0b8be93dbc3df1d9c8fea5a4a8debd073_sk
-    ports:
-      - 9054:7054
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt3.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/c92c1a168447216900d5273fddf59db0b8be93dbc3df1d9c8fea5a4a8debd073_sk -b admin:adminpw -d'
-    volumes:
-      - ./crypto-config/peerOrganizations/amt3.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
-    container_name: ca_amt3
-    networks:
-      - demo   
-      
+     
   orderer.aufsicht.de:
     container_name: orderer.aufsicht.de
     image: hyperledger/fabric-orderer
@@ -84,6 +33,57 @@ services:
     networks:
       - demo
       
+  ca1:
+    container_name: ca_amt1
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-amt1
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.amt1.aufsicht.de-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/0dec23d775a91689b623501e840f420969923b197cbce4003dab8fe2d49706ce_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt1.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/0dec23d775a91689b623501e840f420969923b197cbce4003dab8fe2d49706ce_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/amt1.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
+    networks:
+      - demo
+ 
+  ca2:
+    container_name: ca_amt2
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-amt2
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.amt2.aufsicht.de-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/c75de38fd5c4a18fa7eb00772f1651e5d884531c79a9c7ab5b95130a1b2e2eb9_sk
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt2.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/c75de38fd5c4a18fa7eb00772f1651e5d884531c79a9c7ab5b95130a1b2e2eb9_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/amt2.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
+    networks:
+      - demo
+
+  ca3:
+    container_name: ca_amt3
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-amt3
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.amt3.aufsicht.de-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/c92c1a168447216900d5273fddf59db0b8be93dbc3df1d9c8fea5a4a8debd073_sk
+    ports:
+      - "9054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt3.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/c92c1a168447216900d5273fddf59db0b8be93dbc3df1d9c8fea5a4a8debd073_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/amt3.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
+    networks:
+      - demo        
+   
   peer1.amt1.aufsicht.de:
     container_name: peer1.amt1.aufsicht.de
     image: hyperledger/fabric-peer
@@ -249,7 +249,7 @@ services:
       
   mysql:
     container_name: mysql
-    image: mysql/mysql-server
+    image: mysql:latest
     environment:
       - MYSQL_ROOT_PASSWORD=123456
       - MYSQL_ROOT_HOST=%
@@ -259,21 +259,22 @@ services:
     volumes:
        - /var/run/:/host/var/run/
        - ../db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+       - ./custom.cnf:/etc/mysql/conf.d/custom.cnf
     networks:
-      - demo
+       - demo
       
   node:
     container_name: node
-    image: node:alpine
-    user: node
+    image: node:6.9-alpine
     working_dir: /home/node/app
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
     volumes:
       - ../node:/home/node/app
+      - ../Schoenhofer/crypto-config:/home/node/crypto-config
     ports:
       - 8080:8080
-    command: npm install && monitor.sh
+    command: [sh, -c, "apk --no-cache add --virtual native-deps g++ gcc libgcc libstdc++ linux-headers make python && npm install node-gyp -g && npm install && cd /home/node/app && ./monitor.sh"]
     networks:
       - demo
     depends_on:
@@ -281,7 +282,6 @@ services:
       
   fabric-rest:
     container_name: fabric-rest
-    #image: fabric-rest:schoenhofer
     image: fabric-rest:latest
     working_dir: /
     ports:
@@ -289,6 +289,18 @@ services:
     command: node node_modules/fabric-rest -d
     volumes:
       - ./crypto-config:/creds
+    networks:
+      - demo
+    depends_on:
+      - orderer.aufsicht.de
+      
+  webserver:
+    container_name: webserver
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - ../../Website_Demo:/usr/share/nginx/html
     networks:
       - demo
     depends_on:

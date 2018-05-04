@@ -11,7 +11,7 @@
       "username": "User1@amt1.aufsicht.de",
       "mspid": "Org1MSP",
       "cryptoContent": {
-        "privateKey":"/creds/peerOrganizations/amt1.aufsicht.de/users/User1@amt1.aufsicht.de/msp/keystore/e711b818aa7b54756a3e38a5bd4a25fe9551e8e1c7a0e72c862305f5a09dcc88_sk",
+        "privateKey":"/creds/peerOrganizations/amt1.aufsicht.de/users/User1@amt1.aufsicht.de/msp/keystore/98d7def83f4890479dfc897976af8418922940ce0b207a942e06078d53461a13_sk",
         "signedCert":"/creds/peerOrganizations/amt1.aufsicht.de/users/User1@amt1.aufsicht.de/msp/signcerts/User1@amt1.aufsicht.de-cert.pem"
       }
     },
@@ -19,7 +19,7 @@
       "username": "Admin@amt1.aufsicht.de",
       "mspid": "Org1MSP",
       "cryptoContent": {
-        "privateKey":"/creds/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/keystore/4c3d1e33a4f7762cc1122fc61dede904257741f8ab004d6303ef5503a109d4b3_sk",
+        "privateKey":"/creds/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/keystore/8461c08714c2a25e9444370737bab09cb8e59d4acef613d33998606c9f562555_sk",
         "signedCert":"/creds/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp/signcerts/Admin@amt1.aufsicht.de-cert.pem"
       }
     },

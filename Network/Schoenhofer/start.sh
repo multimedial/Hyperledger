@@ -9,7 +9,7 @@
 set -ev
 # don't rewrite paths for Windows Git Bash users
 export MSYS_NO_PATHCONV=1
-
+export FABRIC_START_TIMEOUT=5
 #########################################
 # stop any eventually running instances
 #########################################
@@ -22,17 +22,21 @@ docker-compose -f docker-compose.yml up -d
 
 #########################################
 # due to docker being unreliable, we wait
-# three seconds, then start up again to 
+# five seconds, then start up again to 
 # make sure that all containers are running
 # NOTE: this cludge is suggested by IBM
 #########################################
-export FABRIC_START_TIMEOUT=5
 sleep ${FABRIC_START_TIMEOUT}
 
 #########################################
 # start up again
 #########################################
 docker-compose -f docker-compose.yml up -d 
+
+docker ps 
+
+sleep ${FABRIC_START_TIMEOUT}
+sleep ${FABRIC_START_TIMEOUT}
 
 #########################################################################################
 # Create the channel vertraulich by executing the channel creation transaction channel.tx
@@ -72,3 +76,6 @@ sleep 15
 docker exec cli bash ./usechaincode.sh
 sleep 5
 docker exec cli bash ./demo.sh
+# show the blockchain viewer
+python -mwebbrowser http://localhost:8080
+python -mwebbrowser http://localhost

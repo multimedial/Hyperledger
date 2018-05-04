@@ -27,7 +27,7 @@ function invokeChainMethod(method, url, dataObj, callbackFunction) {
 
 function loadTransaction(transactionid, assignFunction) {
 
-    url = "http://localhost:3000/api/fabric/1_0/channels/vertraulich/transactions/"+transactionid
+    url = baseURL + "channels/vertraulich/transactions/" + transactionid
 
     $.ajax({
         type: "GET",
