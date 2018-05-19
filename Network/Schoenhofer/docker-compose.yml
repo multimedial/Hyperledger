@@ -258,8 +258,8 @@ services:
       - 3306:3306
     volumes:
        - /var/run/:/host/var/run/
-       - ../db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-       - ./custom.cnf:/etc/mysql/conf.d/custom.cnf
+       - ./fabric-explorer/db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+       - ./fabric-explorer/custom.cnf:/etc/mysql/conf.d/custom.cnf
     networks:
        - demo
       
