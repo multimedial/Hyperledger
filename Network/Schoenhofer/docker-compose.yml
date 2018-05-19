@@ -289,6 +289,8 @@ services:
     command: node node_modules/fabric-rest -d
     volumes:
       - ./crypto-config:/creds
+      - ./fabric-rest/config.json:/node_modules/fabric-rest/server/config.json
+      - ./fabric-rest/datasources.json:/node_modules/fabric-rest/server/datasources.json
     networks:
       - demo
     depends_on:
