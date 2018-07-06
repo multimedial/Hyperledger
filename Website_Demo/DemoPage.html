@@ -149,8 +149,9 @@
 
     function showDocs(data) {
         $('#doclist').html("")
-        $.each(data, function(i, doc) { $('#doclist').append('<a class="dropdown-item" onclick="addActionItem({\'document\':\''+doc.Key+'\'})"><i><b>"'+doc.Record.Title+'"</b></i>  Stufe: ' + doc.Record.SecurityLevel +
-        ' - von ' + doc.Record.Owner + ', derzeit bei ' + doc.Record.CurrentOwner + '</a>')
+        $.each(data, function(i, doc) { $('#doclist').append('<a class="dropdown-item" onclick="addActionItem(' +
+                '{\'document\':\''+doc.Key+'\'})"><i><b>"'+doc.Record.Title+'"</b></i>" Sicherheitsstufe:' +
+                doc.Record.SecurityLevel +' - Ausgeliehen von ' + (doc.Record.CurrentOwner||'niemanden') + '</a>')
         })
     }
 

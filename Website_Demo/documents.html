@@ -148,7 +148,10 @@
             currentOwner = entry.Record.CurrentOwner
             current = [currentOwner, "-"][(owner == currentOwner)?1:0]
             docid = entry.Key
-            $('#tbbody').append("<tr><td><a href='#' onclick=getHistory('"+docid+"')>"+docid+"</a></td><td><b>"+entry.Record.Title+"</b></td><td align='center'>"+entry.Record.Version+"</td><td align='center'>"+entry.Record.SecurityLevel+"</td><td>"+entry.Record.Owner+"</td><td>"+current+"</td></tr>")
+            $('#tbbody').append("<tr><td><a href='#' onclick=getHistory('"+docid+"')>"+docid+"</a></td><td><b>"+
+                    entry.Record.Title+"</b></td><td align='center'>"+entry.Record.Version+"</td><td align='center'>"+
+                    entry.Record.SecurityLevel+"</td><td>"+entry.Record.Owner+"</td><td>"+entry.Record.CurrentOwner+
+                    "</td></tr>")
         })
         showSpinner(0);
     }

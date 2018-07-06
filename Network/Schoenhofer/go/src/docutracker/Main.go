@@ -672,7 +672,7 @@ func (s *SmartContract) lendDocument(stub shim.ChaincodeStubInterface, args []st
 		fmt.Println(newOwnerid + " (security level:" + strconv.Itoa(usr.SecurityLevel) + ") tried to access document " + docid + " (security level:" + strconv.Itoa(doc.SecurityLevel)+")")
 		fmt.Println("################################################################")
 		fmt.Println()
-		errorMsg := "User "+newOwnerid+" has not the required security level for " + docid + " which has security level " + strconv.Itoa(usr.SecurityLevel)
+		errorMsg := "User "+newOwnerid+" has not the required security level for " + docid + "!"
 		stub.SetEvent("Event_Security_Error", []byte(errorMsg))
 		return shim.Success([]byte("ERROR: Security Levels are not compatible."))
 	}
@@ -708,12 +708,6 @@ func (s *SmartContract) returnDocument(stub shim.ChaincodeStubInterface, args []
 		fmt.Println()
 		stub.SetEvent("Event_Security_Error", []byte("User " + returningUser + " tried to return " + docid + ". Document is lend out by " + doc.CurrentOwner + "."))
 		return shim.Success([]byte("ERROR: someone else brought the document back!"))
-	}
-
-	if doc.Owner == doc.CurrentOwner {
-		// error - this document cannot be brought back,
-		// as it is not lend out!
-		return shim.Success([]byte("The document cannot be given back: current owner is the owner."))
 	}
 
 	// ok, we bring back the document
